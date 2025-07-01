@@ -38,7 +38,8 @@ const Index = () => {
       lastUpdate: '방금 전',
       burstScore: 85,
       messages: 23,
-      position: { top: '25%', left: '33%' }
+      lat: 37.497942,
+      lng: 127.027621
     },
     {
       name: '교보문고 강남점',
@@ -48,7 +49,8 @@ const Index = () => {
       lastUpdate: '3분 전',
       burstScore: 45,
       messages: 8,
-      position: { top: '67%', right: '25%' }
+      lat: 37.501274,
+      lng: 127.026768
     },
     {
       name: '신세계백화점 강남점',
@@ -58,7 +60,8 @@ const Index = () => {
       lastUpdate: '1분 전',
       burstScore: 72,
       messages: 15,
-      position: { bottom: '25%', left: '50%' }
+      lat: 37.507794,
+      lng: 127.023542
     },
     {
       name: '맥도날드 강남점',
@@ -68,7 +71,8 @@ const Index = () => {
       lastUpdate: '2분 전',
       burstScore: 88,
       messages: 31,
-      position: { top: '45%', left: '20%' }
+      lat: 37.498095,
+      lng: 127.028000
     },
     {
       name: 'CGV 강남점',
@@ -78,7 +82,8 @@ const Index = () => {
       lastUpdate: '5분 전',
       burstScore: 65,
       messages: 19,
-      position: { bottom: '35%', right: '30%' }
+      lat: 37.501587,
+      lng: 127.025490
     }
   ];
 
@@ -172,7 +177,8 @@ const Index = () => {
               spots={spotData.map(spot => ({
                 name: spot.name,
                 burstScore: spot.burstScore,
-                position: spot.position,
+                lat: spot.lat,
+                lng: spot.lng,
                 onSpotClick: handleSpotClick
               }))}
               apiKey={kakaoApiKey}

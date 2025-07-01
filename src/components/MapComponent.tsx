@@ -1,10 +1,10 @@
-
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface SpotData {
   name: string;
   burstScore: number;
-  position: { top?: string; left?: string; right?: string; bottom?: string };
+  lat: number;
+  lng: number;
   onSpotClick: (spotName: string) => void;
 }
 
@@ -15,6 +15,7 @@ interface MapComponentProps {
 
 const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const [spotPixelPositions, setSpotPixelPositions] = useState<{ x: number; y: number; spot: SpotData }[]>([]);
 
   useEffect(() => {
     if (!apiKey) {
@@ -42,8 +43,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
             // 마커 생성
             spots.forEach((spot) => {
               const markerPosition = new window.kakao.maps.LatLng(
-                37.498095 + (Math.random() - 0.5) * 0.01,
-                127.027610 + (Math.random() - 0.5) * 0.01
+                spot.lat,
+                spot.lng
               );
 
               const marker = new window.kakao.maps.Marker({
@@ -57,6 +58,25 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
                 spot.onSpotClick(spot.name);
               });
             });
+
+            // lat/lng -> 픽셀 좌표 변환
+            const projection = map.getProjection();
+            const bounds = map.getBounds();
+            const sw = bounds.getSouthWest();
+            const ne = bounds.getNorthEast();
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const pixelPositions = spots.map((spot) => {
+              const latlng = new window.kakao.maps.LatLng(spot.lat, spot.lng);
+              const point = projection.pointFromCoords(latlng);
+              // bounds 기준으로 상대 위치 계산
+              const swPoint = projection.pointFromCoords(sw);
+              const nePoint = projection.pointFromCoords(ne);
+              const x = ((point.x - swPoint.x) / (nePoint.x - swPoint.x)) * containerWidth;
+              const y = ((nePoint.y - point.y) / (nePoint.y - swPoint.y)) * containerHeight;
+              return { x, y, spot };
+            });
+            setSpotPixelPositions(pixelPositions);
           }
         });
       }
@@ -85,17 +105,15 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
         )}
       </div>
       
-      {/* 핫스팟 마커들 (fallback) */}
+      {/* 실제 지도 위에 정확히 점을 찍음 */}
       <div className="absolute inset-0 pointer-events-none">
-        {spots.map((spot, index) => (
+        {spotPixelPositions.map(({ x, y, spot }, index) => (
           <div
             key={index}
             className="absolute z-20 cursor-pointer group pointer-events-auto"
             style={{
-              top: spot.position.top,
-              left: spot.position.left,
-              right: spot.position.right,
-              bottom: spot.position.bottom
+              left: x - 8, // 점의 중심이 위치하도록 보정 (w-4/2)
+              top: y - 8
             }}
             onClick={() => spot.onSpotClick(spot.name)}
           >
