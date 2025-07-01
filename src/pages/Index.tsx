@@ -1,13 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import LocationChat from '../components/LocationChat';
 import SpotInfoCard from '../components/SpotInfoCard';
+import MapComponent from '../components/MapComponent';
 import { MapPin, MessageCircle, Users, Clock, Camera } from 'lucide-react';
 
 const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<string>('');
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
-  const [selectedSpot, setSelectedSpot] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 위치 정보 요청
@@ -60,11 +62,11 @@ const Index = () => {
   ];
 
   const handleSpotClick = (spotName: string) => {
-    setSelectedSpot(spotName);
+    navigate(`/chat/${encodeURIComponent(spotName)}`);
   };
 
-  const handleCloseChatRoom = () => {
-    setSelectedSpot(null);
+  const handleJoinChat = (spotName: string) => {
+    navigate(`/chat/${encodeURIComponent(spotName)}`);
   };
 
   return (
@@ -110,30 +112,30 @@ const Index = () => {
           
           {/* 주요 기능 아이콘 */}
           <div className="flex justify-center space-x-8 mb-8">
-            <div className="text-center">
+            <Link to="/realtime-chat" className="text-center hover:scale-105 transition-transform">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-2 mx-auto">
                 <MessageCircle className="w-8 h-8 text-white" />
               </div>
               <p className="text-sm text-gray-600">실시간 채팅</p>
-            </div>
-            <div className="text-center">
+            </Link>
+            <Link to="/wait-time" className="text-center hover:scale-105 transition-transform">
               <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mb-2 mx-auto">
                 <Clock className="w-8 h-8 text-white" />
               </div>
               <p className="text-sm text-gray-600">대기시간 공유</p>
-            </div>
-            <div className="text-center">
+            </Link>
+            <Link to="/photo-share" className="text-center hover:scale-105 transition-transform">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mb-2 mx-auto">
                 <Camera className="w-8 h-8 text-white" />
               </div>
               <p className="text-sm text-gray-600">현장 사진</p>
-            </div>
-            <div className="text-center">
+            </Link>
+            <Link to="/crowd-check" className="text-center hover:scale-105 transition-transform">
               <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-pink-600 rounded-full flex items-center justify-center mb-2 mx-auto">
                 <Users className="w-8 h-8 text-white" />
               </div>
               <p className="text-sm text-gray-600">혼잡도 체크</p>
-            </div>
+            </Link>
           </div>
         </div>
 
@@ -145,59 +147,14 @@ const Index = () => {
               <MapPin className="w-5 h-5 mr-2 text-purple-600" />
               핫플레이스 지도
             </h3>
-            <div className="w-full h-96 bg-gray-100 rounded-xl flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100"></div>
-              <div className="relative z-10 text-center">
-                <MapPin className="w-12 h-12 text-purple-500 mx-auto mb-3" />
-                <p className="text-gray-600 font-medium">실시간 핫플레이스 지도</p>
-                <p className="text-sm text-gray-500 mt-1">강남역 일대</p>
-              </div>
-              
-              {/* 핫스팟 마커들 */}
-              {spotData.map((spot, index) => (
-                <div
-                  key={index}
-                  className="absolute z-20 cursor-pointer group"
-                  style={{
-                    top: spot.position.top,
-                    left: spot.position.left,
-                    right: spot.position.right,
-                    bottom: spot.position.bottom
-                  }}
-                  onClick={() => handleSpotClick(spot.name)}
-                >
-                  <div className={`w-4 h-4 rounded-full animate-pulse shadow-lg transition-all duration-200 group-hover:scale-125 ${
-                    spot.burstScore >= 80 ? 'bg-red-500' :
-                    spot.burstScore >= 60 ? 'bg-orange-500' : 'bg-green-500'
-                  }`}>
-                    <div className={`absolute -top-1 -left-1 w-6 h-6 rounded-full animate-ping ${
-                      spot.burstScore >= 80 ? 'bg-red-300' :
-                      spot.burstScore >= 60 ? 'bg-orange-300' : 'bg-green-300'
-                    }`}></div>
-                  </div>
-                  {/* 툴팁 */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                    {spot.name}
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* 범례 */}
-            <div className="mt-4 flex justify-center space-x-4 text-sm">
-              <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-gray-600">매우 핫함</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                <span className="text-gray-600">인기</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="text-gray-600">여유</span>
-              </div>
-            </div>
+            <MapComponent 
+              spots={spotData.map(spot => ({
+                name: spot.name,
+                burstScore: spot.burstScore,
+                position: spot.position,
+                onSpotClick: handleSpotClick
+              }))}
+            />
             <p className="text-center text-sm text-gray-500 mt-2">
               지도의 핫스팟을 클릭하여 채팅방에 참여하세요!
             </p>
@@ -214,7 +171,7 @@ const Index = () => {
                 <SpotInfoCard 
                   key={index} 
                   {...spot} 
-                  onJoinChat={() => handleSpotClick(spot.name)}
+                  onJoinChat={() => handleJoinChat(spot.name)}
                 />
               ))}
             </div>
@@ -223,14 +180,7 @@ const Index = () => {
 
         {/* 실시간 위치 기반 채팅 */}
         <div className="mb-8">
-          {selectedSpot ? (
-            <LocationChat 
-              location={selectedSpot} 
-              onClose={handleCloseChatRoom}
-            />
-          ) : (
-            <LocationChat location={currentLocation} />
-          )}
+          <LocationChat location={currentLocation} />
         </div>
       </main>
 
