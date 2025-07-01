@@ -1,73 +1,40 @@
-# Welcome to your Lovable project
+# SpotFeed: 위치 기반 익명 채팅 & 현장 정보 공유 플랫폼
+## 목표
+“지금 여기” 사람들끼리 줄 길이·분위기·재고·소음 같은 **현장 데이터**를 실시간으로 던지고 주워가는 사람들의 놀이터 만들기.
 
-## Project info
+## 핵심 기능
+- 위치 기반 채팅으로, 해당 장소에서 일어나는 이벤트에 대한 대화
+- 채팅 및 이미지로 정보 공유
+## 사용자 페르소나
 
-**URL**: https://lovable.dev/projects/b4a0bbc8-50ad-4be2-b589-d188d64d545a
+| **유형**                | **정의**               | **니즈**                                                                 | **Pain Points**    |
+| --------------------- | -------------------- | ---------------------------------------------------------------------- | ------------------ |
+| **유행에 민감한 사람(FOMO족)** | 콘서트·굿즈·한정 메뉴 놓치면 멘붕  | - 소진 예상 시각 카운트다운<br>- Burst Score 상위 5곳 실시간 푸시<br>- 30초 라이브/GIF로 현장 확인 | 정보 늦으면 패닉, 욕설      |
+| **줄·대기 지옥 헤이터**       | 맛집, 런치, 놀이공원 줄길이 극혐러 | - 현재 대기 팀·예상 대기 N분                                                     | 전화, 어플 번갈아보다 시간 날림 |
+| **캠퍼스, 카페 공부족**       | 도서관·학식 자리 싸움하는 대학생   | - 좌석 정보<br>- 동아리·수업 후기 Q&A                                             | 학교 커뮤니티 글은 느리고 복잡  |
+| **소상공인**              | 전화폭탄·리뷰 관리 싫은 사장     | - FAQ 매크로<br>- 재고/대기 자동 안내                                             | 문의 응대로 인력 낭비       |
+### 사용자 페르소나 상세
 
-## How can I edit this code?
+| 사용자 유형             | 페르소나 상세                                                                                                                                                     |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **학생 · FOMO족**     | **이름:** 김민수<br>**나이:** 21세  <br>**전공:** 경영학  <br>**목표:** 줄 서지 않고 축제·굿즈·한정 메뉴를 누구보다 빨리 즐기고 싶다.  <br>**니즈:** 실시간 소진 예상 시각, 핫존 Burst 알림, 30초 GIF 현장 인증, 줄 끝 알람 |
+| **직장인 · 줄 지옥 헤이터** | **이름:** 박지훈  <br>**나이:** 29세  <br>**직무:** 스타트업 백엔드 개발자  <br>**목표:** 60분 점심 시간 내에 맛집 클리어하고 싶다.  <br>**니즈:** 현재 대기 팀·예상 대기 N분, 위치 기반 Q&A                      |
+| **캠퍼스, 카페 공부족**    | **이름:** 최서연  <br>**나이:** 22세  <br>**전공:** 컴퓨터공학  <br>**목표:** 도서관·학식 자리 전쟁에서 승리하고 과제 질문을 빠르게 해결하고 싶다.  <br>**니즈:** 좌석·소음 실시간 현황                              |
+| **소상공인 사장**        | **이름:** 신영철  <br>**나이:** 38세  <br>**역할:** 수제버거 가게 대표  <br>**목표:** 전화·DM 폭탄 줄이고 손님에게 대기·재고 상태를 빠르게 알려 수익을 높이고 싶다.  <br>**니즈:** FAQ 매크로, 대기·재고 자동 게시          |
+### 사용자 시나리오 & 요구사항
 
-There are several ways of editing your application.
+| **페르소나**                 | **시나리오 (사용 흐름)**                                                                                                          | **요구사항**                                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **학생 · FOMO족 (김민수)**     | 축제 도착 <br>→ 앱에서 실시간 핫존·소진 임박 알림 확인 <br>→ 인기 굿즈 부스 선택<br>→ 줄 스캐너로 대기시간 확인 <br>→ 줄 짧아지면 알림 받고 픽업 <br>→ 30초 GIF로 친구들에게 현장 공유 | 1. 실시간 핫존·소진 카운트다운<br>2. 사진 기반 대기시간 추정<br>3. 줄 끝 알림 푸시<br>4. 인‑앱 결제·픽업 확인<br>5. GIF 촬영·업로드 |
+| **직장인 · 줄 지옥 헤이터 (박지훈)** | 점심 60분, 사무실 <br>→ 맛집 대기 시간 확인<br>→ 이동 후 채팅으로 추천 메뉴 확인 <br>→ 식사 후 후기 작성                                                    | 1. 주변 식당 대기 시간 확인<br>2. Q&A 토픽 채팅<br>3. 후기·평점 기능                                           |
+| **캠퍼스, 카페 공부족 (최서연)**    | 시험기간, 도서관 및 카페 자리 탐색 <br>→ 채팅으로 여유 자리 탐색<br>→ 과제 질문 채팅                                                                    | 1. 좌석 실시간 현황<br>2. 과제 Q&A 카테고리                                                             |
+| **소상공인 사장 (신영철)**        | 점심 피크 전 메뉴·재고 업데이트 <br>→ 대기 줄 급증 시 준비 시간 자동 연장 <br>→ FAQ매크로로 문의 응답 <br>→ 재고 10% 남으면 소진 카운트다운 <br>→ 쿠폰 발급·피드 홍보            | 1. 메뉴·재고 실시간 관리<br>2. 예상 대기 자동 계산<br>3. FAQ 매크로 응답<br>4. 소진 카운트다운 게시<br>5. 쿠폰·프로모션 푸시      |
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/b4a0bbc8-50ad-4be2-b589-d188d64d545a) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/b4a0bbc8-50ad-4be2-b589-d188d64d545a) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### 사용자 스토리
+나는야 트렌드 민감남 - 김민수
+- 요구사항: 위치 기반 채팅
+- 사용자 스토리: "FOMO족으로서, 대한민국 핫플 방방곡곡 다 찾아가야한다. 놓치면 안돼"
+- 인수조건:
+    - Given: 김민수, 오늘 어디 놀러갈지 고민 중
+    - When: 유명 패션브랜드 팝업 스토어 이벤트 확인 후, 해당 위치의 채팅 방에서 그곳에 있는 사람들과 대화
+    - Then: 굿즈가 남아있다는 사실 확인 후 전력질주
