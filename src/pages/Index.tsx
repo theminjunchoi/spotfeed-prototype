@@ -4,11 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import LocationChat from '../components/LocationChat';
 import SpotInfoCard from '../components/SpotInfoCard';
 import MapComponent from '../components/MapComponent';
-import { MapPin, MessageCircle, Users, Clock, Camera } from 'lucide-react';
+import { MapPin, MessageCircle, Users, Clock, Camera, Key } from 'lucide-react';
+import { Input } from '../components/ui/input';
 
 const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<string>('');
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
+  const [kakaoApiKey, setKakaoApiKey] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,6 +60,26 @@ const Index = () => {
       burstScore: 72,
       messages: 15,
       position: { bottom: '25%', left: '50%' }
+    },
+    {
+      name: '맥도날드 강남점',
+      category: '패스트푸드',
+      waitTime: '8분',
+      crowdLevel: 'high' as const,
+      lastUpdate: '2분 전',
+      burstScore: 88,
+      messages: 31,
+      position: { top: '45%', left: '20%' }
+    },
+    {
+      name: 'CGV 강남점',
+      category: '영화관',
+      waitTime: '12분',
+      crowdLevel: 'medium' as const,
+      lastUpdate: '5분 전',
+      burstScore: 65,
+      messages: 19,
+      position: { bottom: '35%', right: '30%' }
     }
   ];
 
@@ -70,7 +92,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 overflow-x-hidden">
       {/* 헤더 */}
       <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-purple-100">
         <div className="max-w-6xl mx-auto px-4 py-4">
@@ -139,6 +161,40 @@ const Index = () => {
           </div>
         </div>
 
+        {/* 카카오맵 API 키 입력 */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 mb-8">
+          <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            <Key className="w-5 h-5 mr-2 text-purple-600" />
+            카카오맵 API 키 설정
+          </h3>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="kakao-api-key" className="block text-sm font-medium text-gray-700 mb-2">
+                카카오맵 API 키를 입력하세요
+              </label>
+              <Input
+                id="kakao-api-key"
+                type="text"
+                value={kakaoApiKey}
+                onChange={(e) => setKakaoApiKey(e.target.value)}
+                placeholder="카카오맵 API 키를 입력하세요"
+                className="w-full"
+              />
+            </div>
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <span>API 키가 없으신가요?</span>
+              <a
+                href="https://developers.kakao.com/docs/latest/ko/map/common"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-600 hover:text-purple-800 underline"
+              >
+                카카오 개발자 센터에서 발급받기
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* 지도와 스팟 정보 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* 지도 섹션 */}
@@ -154,6 +210,7 @@ const Index = () => {
                 position: spot.position,
                 onSpotClick: handleSpotClick
               }))}
+              apiKey={kakaoApiKey}
             />
             <p className="text-center text-sm text-gray-500 mt-2">
               지도의 핫스팟을 클릭하여 채팅방에 참여하세요!

@@ -10,15 +10,20 @@ interface SpotData {
 
 interface MapComponentProps {
   spots: SpotData[];
+  apiKey?: string;
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({ spots }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!apiKey) {
+      return;
+    }
+
     // 카카오맵 API 로드 및 지도 초기화
     const script = document.createElement('script');
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_KAKAO_MAP_KEY&autoload=false`;
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false`;
     script.async = true;
     document.head.appendChild(script);
 
@@ -62,15 +67,22 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots }) => {
         document.head.removeChild(script);
       }
     };
-  }, [spots]);
+  }, [spots, apiKey]);
 
   return (
     <div className="relative">
       <div ref={mapRef} className="w-full h-96 rounded-xl shadow-lg bg-gray-100 flex items-center justify-center">
-        <div className="text-gray-500 text-center">
-          <div className="text-sm mb-2">지도를 로드하는 중...</div>
-          <div className="text-xs">카카오맵 API 키가 필요합니다</div>
-        </div>
+        {!apiKey ? (
+          <div className="text-gray-500 text-center">
+            <div className="text-sm mb-2">카카오맵 API 키를 입력하세요</div>
+            <div className="text-xs">위에서 API 키를 설정해주세요</div>
+          </div>
+        ) : (
+          <div className="text-gray-500 text-center">
+            <div className="text-sm mb-2">지도를 로드하는 중...</div>
+            <div className="text-xs">잠시만 기다려주세요</div>
+          </div>
+        )}
       </div>
       
       {/* 핫스팟 마커들 (fallback) */}
