@@ -58,13 +58,20 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots }) => {
     };
 
     return () => {
-      document.head.removeChild(script);
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
     };
   }, [spots]);
 
   return (
     <div className="relative">
-      <div ref={mapRef} className="w-full h-96 rounded-xl shadow-lg"></div>
+      <div ref={mapRef} className="w-full h-96 rounded-xl shadow-lg bg-gray-100 flex items-center justify-center">
+        <div className="text-gray-500 text-center">
+          <div className="text-sm mb-2">지도를 로드하는 중...</div>
+          <div className="text-xs">카카오맵 API 키가 필요합니다</div>
+        </div>
+      </div>
       
       {/* 핫스팟 마커들 (fallback) */}
       <div className="absolute inset-0 pointer-events-none">
