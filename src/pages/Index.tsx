@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import LocationChat from '../components/LocationChat';
 import SpotInfoCard from '../components/SpotInfoCard';
-import PersonaSection from '../components/PersonaSection';
 import { MapPin, MessageCircle, Users, Clock, Camera } from 'lucide-react';
 
 const Index = () => {
@@ -31,7 +30,7 @@ const Index = () => {
       name: '스타벅스 강남역점',
       category: '카페',
       waitTime: '15분',
-      crowdLevel: 'high',
+      crowdLevel: 'high' as const,
       lastUpdate: '방금 전',
       burstScore: 85,
       messages: 23
@@ -40,7 +39,7 @@ const Index = () => {
       name: '교보문고 강남점',
       category: '도서/문구',
       waitTime: '없음',
-      crowdLevel: 'medium',
+      crowdLevel: 'medium' as const,
       lastUpdate: '3분 전',
       burstScore: 45,
       messages: 8
@@ -49,7 +48,7 @@ const Index = () => {
       name: '신세계백화점 강남점',
       category: '쇼핑',
       waitTime: '5분',
-      crowdLevel: 'low',
+      crowdLevel: 'low' as const,
       lastUpdate: '1분 전',
       burstScore: 72,
       messages: 15
@@ -60,7 +59,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50">
       {/* 헤더 */}
       <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-purple-100">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+        <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
@@ -87,7 +86,7 @@ const Index = () => {
       </header>
 
       {/* 메인 컨텐츠 */}
-      <main className="max-w-4xl mx-auto px-4 py-6">
+      <main className="max-w-6xl mx-auto px-4 py-6">
         {/* 플랫폼 소개 */}
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -126,16 +125,62 @@ const Index = () => {
           </div>
         </div>
 
-        {/* 현재 위치 기반 SpotFeed */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-            <MapPin className="w-6 h-6 mr-2 text-purple-600" />
-            내 주변 실시간 현장
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {spotData.map((spot, index) => (
-              <SpotInfoCard key={index} {...spot} />
-            ))}
+        {/* 지도와 스팟 정보 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* 지도 섹션 */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <MapPin className="w-5 h-5 mr-2 text-purple-600" />
+              핫플레이스 지도
+            </h3>
+            <div className="w-full h-96 bg-gray-100 rounded-xl flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100"></div>
+              <div className="relative z-10 text-center">
+                <MapPin className="w-12 h-12 text-purple-500 mx-auto mb-3" />
+                <p className="text-gray-600 font-medium">실시간 핫플레이스 지도</p>
+                <p className="text-sm text-gray-500 mt-1">강남역 일대</p>
+              </div>
+              
+              {/* 핫스팟 마커들 */}
+              <div className="absolute top-1/4 left-1/3 w-4 h-4 bg-red-500 rounded-full animate-pulse shadow-lg z-20">
+                <div className="absolute -top-1 -left-1 w-6 h-6 bg-red-300 rounded-full animate-ping"></div>
+              </div>
+              <div className="absolute top-2/3 right-1/4 w-4 h-4 bg-orange-500 rounded-full animate-pulse shadow-lg z-20">
+                <div className="absolute -top-1 -left-1 w-6 h-6 bg-orange-300 rounded-full animate-ping"></div>
+              </div>
+              <div className="absolute bottom-1/4 left-1/2 w-4 h-4 bg-green-500 rounded-full animate-pulse shadow-lg z-20">
+                <div className="absolute -top-1 -left-1 w-6 h-6 bg-green-300 rounded-full animate-ping"></div>
+              </div>
+            </div>
+            
+            {/* 범례 */}
+            <div className="mt-4 flex justify-center space-x-4 text-sm">
+              <div className="flex items-center space-x-1">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <span className="text-gray-600">매우 핫함</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                <span className="text-gray-600">인기</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span className="text-gray-600">여유</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 현재 위치 기반 SpotFeed */}
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <Users className="w-5 h-5 mr-2 text-purple-600" />
+              실시간 현장 정보
+            </h3>
+            <div className="space-y-4">
+              {spotData.map((spot, index) => (
+                <SpotInfoCard key={index} {...spot} />
+              ))}
+            </div>
           </div>
         </div>
 
@@ -143,14 +188,11 @@ const Index = () => {
         <div className="mb-8">
           <LocationChat location={currentLocation} />
         </div>
-
-        {/* 사용자 페르소나 섹션 */}
-        <PersonaSection />
       </main>
 
       {/* 푸터 */}
       <footer className="bg-gray-900 text-white py-8 mt-12">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center mb-4">
             <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
               <MapPin className="w-5 h-5 text-white" />
