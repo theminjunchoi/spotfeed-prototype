@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LocationChat from '../components/LocationChat';
@@ -11,6 +10,7 @@ const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<string>('');
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
   const [kakaoApiKey, setKakaoApiKey] = useState<string>('');
+  const [kakaoApiKeyInput, setKakaoApiKeyInput] = useState<string>('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -172,14 +172,23 @@ const Index = () => {
               <label htmlFor="kakao-api-key" className="block text-sm font-medium text-gray-700 mb-2">
                 카카오맵 API 키를 입력하세요
               </label>
-              <Input
-                id="kakao-api-key"
-                type="text"
-                value={kakaoApiKey}
-                onChange={(e) => setKakaoApiKey(e.target.value)}
-                placeholder="카카오맵 API 키를 입력하세요"
-                className="w-full"
-              />
+              <div className="flex space-x-2">
+                <Input
+                  id="kakao-api-key"
+                  type="text"
+                  value={kakaoApiKeyInput}
+                  onChange={(e) => setKakaoApiKeyInput(e.target.value)}
+                  placeholder="카카오맵 API 키를 입력하세요"
+                  className="w-full"
+                />
+                <button
+                  type="button"
+                  className="h-10 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium block normal-case whitespace-nowrap"
+                  onClick={() => setKakaoApiKey(kakaoApiKeyInput)}
+                >
+                  적용
+                </button>
+              </div>
             </div>
             <div className="flex items-center space-x-2 text-sm text-gray-600">
               <span>API 키가 없으신가요?</span>
@@ -223,7 +232,7 @@ const Index = () => {
               <Users className="w-5 h-5 mr-2 text-purple-600" />
               실시간 현장 정보
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[474px] overflow-y-auto pr-2">
               {spotData.map((spot, index) => (
                 <SpotInfoCard 
                   key={index} 

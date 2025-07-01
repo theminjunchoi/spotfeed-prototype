@@ -52,10 +52,6 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
   // 가짜 실시간 메시지 시뮬레이션
   useEffect(() => {
     const fakeMessages = [
