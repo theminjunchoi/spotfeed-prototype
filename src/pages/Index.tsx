@@ -7,6 +7,7 @@ import { MapPin, MessageCircle, Users, Clock, Camera } from 'lucide-react';
 const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<string>('');
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
+  const [selectedSpot, setSelectedSpot] = useState<string | null>(null);
 
   useEffect(() => {
     // 위치 정보 요청
@@ -33,7 +34,8 @@ const Index = () => {
       crowdLevel: 'high' as const,
       lastUpdate: '방금 전',
       burstScore: 85,
-      messages: 23
+      messages: 23,
+      position: { top: '25%', left: '33%' }
     },
     {
       name: '교보문고 강남점',
@@ -42,7 +44,8 @@ const Index = () => {
       crowdLevel: 'medium' as const,
       lastUpdate: '3분 전',
       burstScore: 45,
-      messages: 8
+      messages: 8,
+      position: { top: '67%', right: '25%' }
     },
     {
       name: '신세계백화점 강남점',
@@ -51,9 +54,18 @@ const Index = () => {
       crowdLevel: 'low' as const,
       lastUpdate: '1분 전',
       burstScore: 72,
-      messages: 15
+      messages: 15,
+      position: { bottom: '25%', left: '50%' }
     }
   ];
+
+  const handleSpotClick = (spotName: string) => {
+    setSelectedSpot(spotName);
+  };
+
+  const handleCloseChatRoom = () => {
+    setSelectedSpot(null);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50">
@@ -142,15 +154,33 @@ const Index = () => {
               </div>
               
               {/* 핫스팟 마커들 */}
-              <div className="absolute top-1/4 left-1/3 w-4 h-4 bg-red-500 rounded-full animate-pulse shadow-lg z-20">
-                <div className="absolute -top-1 -left-1 w-6 h-6 bg-red-300 rounded-full animate-ping"></div>
-              </div>
-              <div className="absolute top-2/3 right-1/4 w-4 h-4 bg-orange-500 rounded-full animate-pulse shadow-lg z-20">
-                <div className="absolute -top-1 -left-1 w-6 h-6 bg-orange-300 rounded-full animate-ping"></div>
-              </div>
-              <div className="absolute bottom-1/4 left-1/2 w-4 h-4 bg-green-500 rounded-full animate-pulse shadow-lg z-20">
-                <div className="absolute -top-1 -left-1 w-6 h-6 bg-green-300 rounded-full animate-ping"></div>
-              </div>
+              {spotData.map((spot, index) => (
+                <div
+                  key={index}
+                  className="absolute z-20 cursor-pointer group"
+                  style={{
+                    top: spot.position.top,
+                    left: spot.position.left,
+                    right: spot.position.right,
+                    bottom: spot.position.bottom
+                  }}
+                  onClick={() => handleSpotClick(spot.name)}
+                >
+                  <div className={`w-4 h-4 rounded-full animate-pulse shadow-lg transition-all duration-200 group-hover:scale-125 ${
+                    spot.burstScore >= 80 ? 'bg-red-500' :
+                    spot.burstScore >= 60 ? 'bg-orange-500' : 'bg-green-500'
+                  }`}>
+                    <div className={`absolute -top-1 -left-1 w-6 h-6 rounded-full animate-ping ${
+                      spot.burstScore >= 80 ? 'bg-red-300' :
+                      spot.burstScore >= 60 ? 'bg-orange-300' : 'bg-green-300'
+                    }`}></div>
+                  </div>
+                  {/* 툴팁 */}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                    {spot.name}
+                  </div>
+                </div>
+              ))}
             </div>
             
             {/* 범례 */}
@@ -168,6 +198,9 @@ const Index = () => {
                 <span className="text-gray-600">여유</span>
               </div>
             </div>
+            <p className="text-center text-sm text-gray-500 mt-2">
+              지도의 핫스팟을 클릭하여 채팅방에 참여하세요!
+            </p>
           </div>
 
           {/* 현재 위치 기반 SpotFeed */}
@@ -178,7 +211,11 @@ const Index = () => {
             </h3>
             <div className="space-y-4">
               {spotData.map((spot, index) => (
-                <SpotInfoCard key={index} {...spot} />
+                <SpotInfoCard 
+                  key={index} 
+                  {...spot} 
+                  onJoinChat={() => handleSpotClick(spot.name)}
+                />
               ))}
             </div>
           </div>
@@ -186,7 +223,14 @@ const Index = () => {
 
         {/* 실시간 위치 기반 채팅 */}
         <div className="mb-8">
-          <LocationChat location={currentLocation} />
+          {selectedSpot ? (
+            <LocationChat 
+              location={selectedSpot} 
+              onClose={handleCloseChatRoom}
+            />
+          ) : (
+            <LocationChat location={currentLocation} />
+          )}
         </div>
       </main>
 

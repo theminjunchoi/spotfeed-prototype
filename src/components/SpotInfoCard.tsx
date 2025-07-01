@@ -10,6 +10,8 @@ interface SpotInfoCardProps {
   lastUpdate: string;
   burstScore: number;
   messages: number;
+  position?: { top?: string; left?: string; right?: string; bottom?: string };
+  onJoinChat?: () => void;
 }
 
 const SpotInfoCard: React.FC<SpotInfoCardProps> = ({
@@ -19,7 +21,8 @@ const SpotInfoCard: React.FC<SpotInfoCardProps> = ({
   crowdLevel,
   lastUpdate,
   burstScore,
-  messages
+  messages,
+  onJoinChat
 }) => {
   const getCrowdColor = (level: string) => {
     switch (level) {
@@ -100,7 +103,10 @@ const SpotInfoCard: React.FC<SpotInfoCardProps> = ({
         {/* 푸터 */}
         <div className="flex items-center justify-between pt-3 border-t border-gray-100">
           <span className="text-xs text-gray-400">업데이트: {lastUpdate}</span>
-          <button className="px-3 py-1 bg-purple-600 text-white text-xs rounded-md hover:bg-purple-700 transition-colors">
+          <button 
+            onClick={onJoinChat}
+            className="px-3 py-1 bg-purple-600 text-white text-xs rounded-md hover:bg-purple-700 transition-colors"
+          >
             참여하기
           </button>
         </div>

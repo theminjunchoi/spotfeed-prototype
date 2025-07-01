@@ -1,13 +1,13 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import ChatMessage from './ChatMessage';
-import { Send, Image, MapPin } from 'lucide-react';
+import { Send, Image, MapPin, X } from 'lucide-react';
 
 interface LocationChatProps {
   location: string;
+  onClose?: () => void;
 }
 
-const LocationChat: React.FC<LocationChatProps> = ({ location }) => {
+const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -124,14 +124,24 @@ const LocationChat: React.FC<LocationChatProps> = ({ location }) => {
               <p className="text-sm text-purple-100">{location}</p>
             </div>
           </div>
-          <div className="text-right">
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span className="text-sm">실시간</span>
+          <div className="flex items-center space-x-3">
+            <div className="text-right">
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-sm">실시간</span>
+              </div>
+              <p className="text-xs text-purple-100">
+                {messages.length}개 메시지
+              </p>
             </div>
-            <p className="text-xs text-purple-100">
-              {messages.length}개 메시지
-            </p>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="p-1 hover:bg-white/20 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </div>
       </div>
