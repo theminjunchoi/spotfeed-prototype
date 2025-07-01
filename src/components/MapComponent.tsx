@@ -114,11 +114,11 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
       </div>
       
       {/* 실제 지도 위에 정확히 점을 찍음 */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-auto">
         {spotPixelPositions.map(({ x, y, spot }, index) => (
           <div
             key={index}
-            className="absolute z-20 cursor-pointer group pointer-events-auto"
+            className="absolute z-20 cursor-pointer group"
             style={{
               left: x - 8, // 점의 중심이 위치하도록 보정 (w-4/2)
               top: y - 8
