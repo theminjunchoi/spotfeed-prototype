@@ -182,6 +182,10 @@ const Index = () => {
                 onSpotClick: handleSpotClick
               }))}
               apiKey={kakaoApiKey}
+              onMapClick={(lat, lng) => {
+                const spotName = `새 장소 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
+                handleSpotClick(spotName);
+              }}
             />
             <p className="text-center text-sm text-gray-500 mt-2">
               지도의 핫스팟을 클릭하여 채팅방에 참여하세요!

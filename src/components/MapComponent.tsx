@@ -11,9 +11,10 @@ interface SpotData {
 interface MapComponentProps {
   spots: SpotData[];
   apiKey?: string;
+  onMapClick?: (lat: number, lng: number) => void;
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
+const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey, onMapClick }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [spotPixelPositions, setSpotPixelPositions] = useState<{ x: number; y: number; spot: SpotData }[]>([]);
 
@@ -85,6 +86,16 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
             updateSpotPixelPositions();
             // 지도 이동/확대/축소 시마다 업데이트
             window.kakao.maps.event.addListener(map, 'bounds_changed', updateSpotPixelPositions);
+
+            // 지도 클릭 이벤트 등록
+            if (typeof window !== 'undefined' && window.kakao && window.kakao.maps) {
+              (window.kakao.maps.event.addListener as any)(map, 'click', function(mouseEvent: any) {
+                if (typeof onMapClick === 'function') {
+                  const latlng = mouseEvent.latLng;
+                  onMapClick(latlng.getLat(), latlng.getLng());
+                }
+              });
+            }
           }
         });
       }
@@ -95,7 +106,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
         document.head.removeChild(script);
       }
     };
-  }, [spots, apiKey]);
+  }, [spots, apiKey, onMapClick]);
 
   return (
     <div className="relative">
