@@ -9,9 +9,8 @@ import { Input } from '../components/ui/input';
 const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<string>('');
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
-  const [kakaoApiKey, setKakaoApiKey] = useState<string>('');
-  const [kakaoApiKeyInput, setKakaoApiKeyInput] = useState<string>('');
   const navigate = useNavigate();
+  const kakaoApiKey = 'e5a12bbcf8d41db46bd201eaa8a7348b';
 
   useEffect(() => {
     // 위치 정보 요청
@@ -158,49 +157,6 @@ const Index = () => {
               </div>
               <p className="text-sm text-gray-600">혼잡도 체크</p>
             </Link>
-          </div>
-        </div>
-
-        {/* 카카오맵 API 키 입력 */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 mb-8">
-          <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-            <Key className="w-5 h-5 mr-2 text-purple-600" />
-            카카오맵 API 키 설정
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="kakao-api-key" className="block text-sm font-medium text-gray-700 mb-2">
-                카카오맵 API 키를 입력하세요
-              </label>
-              <div className="flex space-x-2">
-                <Input
-                  id="kakao-api-key"
-                  type="text"
-                  value={kakaoApiKeyInput}
-                  onChange={(e) => setKakaoApiKeyInput(e.target.value)}
-                  placeholder="카카오맵 API 키를 입력하세요"
-                  className="w-full"
-                />
-                <button
-                  type="button"
-                  className="h-10 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-medium block normal-case whitespace-nowrap"
-                  onClick={() => setKakaoApiKey(kakaoApiKeyInput)}
-                >
-                  적용
-                </button>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <span>API 키가 없으신가요?</span>
-              <a
-                href="https://developers.kakao.com/docs/latest/ko/map/common"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-purple-600 hover:text-purple-800 underline"
-              >
-                카카오 개발자 센터에서 발급받기
-              </a>
-            </div>
           </div>
         </div>
 
