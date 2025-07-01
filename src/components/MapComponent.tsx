@@ -59,24 +59,30 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
               });
             });
 
-            // lat/lng -> 픽셀 좌표 변환
-            const projection = map.getProjection();
-            const bounds = map.getBounds();
-            const sw = bounds.getSouthWest();
-            const ne = bounds.getNorthEast();
-            const containerWidth = container.offsetWidth;
-            const containerHeight = container.offsetHeight;
-            const pixelPositions = spots.map((spot) => {
-              const latlng = new window.kakao.maps.LatLng(spot.lat, spot.lng);
-              const point = projection.pointFromCoords(latlng);
-              // bounds 기준으로 상대 위치 계산
-              const swPoint = projection.pointFromCoords(sw);
-              const nePoint = projection.pointFromCoords(ne);
-              const x = ((point.x - swPoint.x) / (nePoint.x - swPoint.x)) * containerWidth;
-              const y = ((nePoint.y - point.y) / (nePoint.y - swPoint.y)) * containerHeight;
-              return { x, y, spot };
-            });
-            setSpotPixelPositions(pixelPositions);
+            // lat/lng -> 픽셀 좌표 변환 함수
+            const updateSpotPixelPositions = () => {
+              const projection = map.getProjection();
+              const bounds = map.getBounds();
+              const sw = bounds.getSouthWest();
+              const ne = bounds.getNorthEast();
+              const containerWidth = container.offsetWidth;
+              const containerHeight = container.offsetHeight;
+              const pixelPositions = spots.map((spot) => {
+                const latlng = new window.kakao.maps.LatLng(spot.lat, spot.lng);
+                const point = projection.pointFromCoords(latlng);
+                // bounds 기준으로 상대 위치 계산
+                const swPoint = projection.pointFromCoords(sw);
+                const nePoint = projection.pointFromCoords(ne);
+                const x = ((point.x - swPoint.x) / (nePoint.x - swPoint.x)) * containerWidth;
+                const y = ((nePoint.y - point.y) / (nePoint.y - swPoint.y)) * containerHeight;
+                return { x, y, spot };
+              });
+              setSpotPixelPositions(pixelPositions);
+            };
+            // 최초 렌더링
+            updateSpotPixelPositions();
+            // 지도 이동/확대/축소 시마다 업데이트
+            window.kakao.maps.event.addListener(map, 'bounds_changed', updateSpotPixelPositions);
           }
         });
       }
