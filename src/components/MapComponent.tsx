@@ -76,7 +76,9 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey }) => {
                 const x = ((point.x - swPoint.x) / (nePoint.x - swPoint.x)) * containerWidth;
                 const y = ((nePoint.y - point.y) / (nePoint.y - swPoint.y)) * containerHeight;
                 return { x, y, spot };
-              });
+              })
+              // 지도 영역 내에 있는 점만 필터링
+              .filter(({ x, y }) => x >= 0 && x <= containerWidth && y >= 0 && y <= containerHeight);
               setSpotPixelPositions(pixelPositions);
             };
             // 최초 렌더링
