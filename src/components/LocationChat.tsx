@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import ChatMessage from './ChatMessage';
+import WaitTimeEstimator from './WaitTimeEstimator';
 import { Send, Image, MapPin, X, AlertTriangle, Star } from 'lucide-react';
 import { useUser } from '../contexts/UserContext';
 
@@ -123,6 +123,9 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
   const [userName] = useState('익명' + Math.floor(Math.random() * 1000));
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -198,23 +201,38 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
     return () => clearInterval(interval);
   }, [location]);
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSendMessage = () => {
     if (!canUserChat()) {
       alert('채팅 정지 상태입니다. 정지 해제 후 이용해주세요.');
       return;
     }
 
-    if (newMessage.trim()) {
+    if (newMessage.trim() || selectedImage) {
       const message = {
         id: Date.now(),
         user: userName,
-        message: newMessage,
+        message: newMessage || '사진을 공유했습니다',
         time: '방금 전',
-        type: 'text' as const,
-        avatar: '🙋‍♂️'
+        type: selectedImage ? 'image' as const : 'text' as const,
+        avatar: '🙋‍♂️',
+        imageUrl: imagePreview || undefined
       };
       setMessages(prev => [...prev, message]);
       setNewMessage('');
+      setSelectedImage(null);
+      setImagePreview(null);
       
       // 타이핑 애니메이션
       setIsTyping(true);
@@ -282,7 +300,12 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
       <div className="h-80 overflow-y-auto p-4 bg-gray-50">
         <div className="space-y-3">
           {messages.map((msg) => (
-            <ChatMessage key={msg.id} {...msg} />
+            <div key={msg.id}>
+              <ChatMessage {...msg} />
+              {msg.type === 'image' && msg.imageUrl && (
+                <WaitTimeEstimator imageUrl={msg.imageUrl} />
+              )}
+            </div>
           ))}
           {isTyping && (
             <div className="flex items-center space-x-2 text-gray-500">
@@ -306,8 +329,32 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
             <span>채팅이 일시 정지되었습니다. {currentUser.suspendedUntil?.toLocaleString()}까지 정지됩니다.</span>
           </div>
         )}
+        {/* 이미지 미리보기 */}
+        {imagePreview && (
+          <div className="mb-3 relative">
+            <img src={imagePreview} alt="미리보기" className="max-w-32 max-h-32 rounded-lg" />
+            <button
+              onClick={() => {
+                setSelectedImage(null);
+                setImagePreview(null);
+              }}
+              className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm hover:bg-red-600"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        )}
+        
         <div className="flex items-center space-x-3">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImageSelect}
+            accept="image/*"
+            className="hidden"
+          />
           <button 
+            onClick={() => fileInputRef.current?.click()}
             className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
             disabled={!canUserChat()}
           >
@@ -326,7 +373,7 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
           </div>
           <button
             onClick={handleSendMessage}
-            disabled={!newMessage.trim() || !canUserChat()}
+            disabled={(!newMessage.trim() && !selectedImage) || !canUserChat()}
             className="p-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <Send className="w-5 h-5" />

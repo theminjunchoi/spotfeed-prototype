@@ -32,6 +32,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     reportUser(targetUserId);
     setIsReported(true);
     setShowActions(false);
+    alert(`${user}님을 신고했습니다.`);
   };
 
   const handleRecommend = () => {
@@ -39,6 +40,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
     recommendUser(targetUserId);
     setIsRecommended(true);
     setShowActions(false);
+    alert(`${user}님을 추천했습니다.`);
   };
 
   // 현재 사용자가 작성한 메시지면 액션 버튼 숨김
@@ -73,7 +75,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
               alt="shared content" 
               className="max-w-xs rounded-lg shadow-sm"
             />
-            {message && (
+            {message && message !== '사진을 공유했습니다' && (
               <p className="text-gray-700 text-sm mt-2">{message}</p>
             )}
           </div>
