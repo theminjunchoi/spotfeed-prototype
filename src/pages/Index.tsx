@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import LocationChat from '../components/LocationChat';
 import SpotInfoCard from '../components/SpotInfoCard';
 import MapComponent from '../components/MapComponent';
-import { MapPin, MessageCircle, Users, Clock, Camera, Key } from 'lucide-react';
+import FullscreenMap from '../components/FullscreenMap';
+import { MapPin, MessageCircle, Users, Clock, Camera, Key, Maximize } from 'lucide-react';
 import { Input } from '../components/ui/input';
 
 const Index = () => {
   const [currentLocation, setCurrentLocation] = useState<string>('');
   const [isLocationEnabled, setIsLocationEnabled] = useState(false);
+  const [showFullscreenMap, setShowFullscreenMap] = useState(false);
   const navigate = useNavigate();
   const kakaoApiKey = 'e5a12bbcf8d41db46bd201eaa8a7348b';
 
@@ -169,10 +171,19 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* 지도 섹션 */}
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <MapPin className="w-5 h-5 mr-2 text-purple-600" />
-              핫플레이스 지도
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                <MapPin className="w-5 h-5 mr-2 text-purple-600" />
+                핫플레이스 지도
+              </h3>
+              <button
+                onClick={() => setShowFullscreenMap(true)}
+                className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                title="전체화면으로 보기"
+              >
+                <Maximize className="w-5 h-5" />
+              </button>
+            </div>
             <MapComponent 
               spots={spotData.map(spot => ({
                 name: spot.name,
@@ -215,6 +226,26 @@ const Index = () => {
           <LocationChat location={currentLocation} />
         </div>
       </main>
+
+      {/* 전체화면 지도 모달 */}
+      {showFullscreenMap && (
+        <FullscreenMap
+          spots={spotData.map(spot => ({
+            name: spot.name,
+            burstScore: spot.burstScore,
+            lat: spot.lat,
+            lng: spot.lng,
+            messages: spot.messages,
+            onSpotClick: handleSpotClick
+          }))}
+          apiKey={kakaoApiKey}
+          onMapClick={(lat, lng) => {
+            const spotName = `새 장소 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
+            handleSpotClick(spotName);
+          }}
+          onClose={() => setShowFullscreenMap(false)}
+        />
+      )}
 
       {/* 푸터 */}
       <footer className="bg-gray-900 text-white py-8 mt-12">
