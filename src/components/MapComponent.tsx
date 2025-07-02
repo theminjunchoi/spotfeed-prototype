@@ -158,8 +158,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey, onMapClick }
   }, [spots, apiKey, onMapClick]);
 
   return (
-    <div className="relative">
-      <div ref={mapRef} className="w-full h-96 rounded-xl shadow-lg bg-gray-100 flex items-center justify-center">
+    <div className="relative h-full min-h-0 flex-1">
+      <div ref={mapRef} className="w-full h-full min-h-0 flex-1 rounded-xl shadow-lg bg-gray-100 flex items-center justify-center" style={{minHeight: 340}}>
         {!apiKey ? (
           <div className="text-gray-500 text-center">
             <div className="text-sm mb-2">카카오맵 API 키를 입력하세요</div>

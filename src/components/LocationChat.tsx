@@ -127,14 +127,6 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
   // 장소별 가짜 실시간 메시지 시뮬레이션
   useEffect(() => {
     const locationFakeMessages: { [key: string]: string[] } = {

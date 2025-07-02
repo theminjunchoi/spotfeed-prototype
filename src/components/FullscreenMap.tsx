@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { X, Maximize } from 'lucide-react';
 import MapComponent from './MapComponent';
@@ -26,7 +25,7 @@ const FullscreenMap: React.FC<FullscreenMapProps> = ({ spots, apiKey, onMapClick
     .slice(0, 3);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black">
+    <div className="fixed inset-0 z-50 bg-black flex flex-col">
       {/* 닫기 버튼 */}
       <button
         onClick={onClose}
@@ -36,7 +35,7 @@ const FullscreenMap: React.FC<FullscreenMapProps> = ({ spots, apiKey, onMapClick
       </button>
 
       {/* 전체화면 지도 */}
-      <div className="w-full h-full">
+      <div className="w-full flex-1 min-h-0">
         <MapComponent
           spots={spots.map(spot => ({
             name: spot.name,
@@ -51,7 +50,7 @@ const FullscreenMap: React.FC<FullscreenMapProps> = ({ spots, apiKey, onMapClick
       </div>
 
       {/* 하단 활발한 채팅방 표시 */}
-      <div className="absolute bottom-4 left-4 right-4 z-10">
+      <div className="w-full absolute left-0 right-0 bottom-4 z-10 px-4">
         <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-lg p-4">
           <h3 className="text-lg font-bold text-gray-900 mb-3 text-center">
             🔥 채팅이 활발한 장소 TOP 3
