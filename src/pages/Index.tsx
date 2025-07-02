@@ -170,37 +170,41 @@ const Index = () => {
         {/* 지도와 스팟 정보 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* 지도 섹션 */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                <MapPin className="w-5 h-5 mr-2 text-purple-600" />
-                핫플레이스 지도
-              </h3>
-              <button
-                onClick={() => setShowFullscreenMap(true)}
-                className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                title="전체화면으로 보기"
-              >
-                <Maximize className="w-5 h-5" />
-              </button>
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 h-full">
+            <div className="flex flex-col h-full justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                    <MapPin className="w-5 h-5 mr-2 text-purple-600" />
+                    핫플레이스 지도
+                  </h3>
+                  <button
+                    onClick={() => setShowFullscreenMap(true)}
+                    className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                    title="전체화면으로 보기"
+                  >
+                    <Maximize className="w-5 h-5" />
+                  </button>
+                </div>
+                <MapComponent 
+                  spots={spotData.map(spot => ({
+                    name: spot.name,
+                    burstScore: spot.burstScore,
+                    lat: spot.lat,
+                    lng: spot.lng,
+                    onSpotClick: handleSpotClick
+                  }))}
+                  apiKey={kakaoApiKey}
+                  onMapClick={(lat, lng) => {
+                    const spotName = `새 장소 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
+                    handleSpotClick(spotName);
+                  }}
+                />
+              </div>
+              <p className="text-center text-sm text-gray-500 mt-2 flex-shrink-0">
+                지도의 핫스팟을 클릭하여 채팅방에 참여하세요!
+              </p>
             </div>
-            <MapComponent 
-              spots={spotData.map(spot => ({
-                name: spot.name,
-                burstScore: spot.burstScore,
-                lat: spot.lat,
-                lng: spot.lng,
-                onSpotClick: handleSpotClick
-              }))}
-              apiKey={kakaoApiKey}
-              onMapClick={(lat, lng) => {
-                const spotName = `새 장소 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
-                handleSpotClick(spotName);
-              }}
-            />
-            <p className="text-center text-sm text-gray-500 mt-2">
-              지도의 핫스팟을 클릭하여 채팅방에 참여하세요!
-            </p>
           </div>
 
           {/* 현재 위치 기반 SpotFeed */}

@@ -202,19 +202,21 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey, onMapClick }
         ))}
       </div>
       
-      {/* 범례 */}
-      <div className="mt-4 flex justify-center space-x-4 text-sm">
-        <div className="flex items-center space-x-1">
-          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-          <span className="text-gray-600">매우 핫함</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-          <span className="text-gray-600">인기</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          <span className="text-gray-600">여유</span>
+      {/* 범례: 지도 카드 내부 하단에 고정, overflow 방지 */}
+      <div className="absolute bottom-0 left-0 w-full px-2 pb-2 pointer-events-none z-10 max-w-full">
+        <div className="flex justify-center space-x-4 text-sm overflow-x-auto">
+          <div className="flex items-center space-x-1">
+            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            <span className="text-gray-600 drop-shadow-sm">매우 핫함</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+            <span className="text-gray-600 drop-shadow-sm">인기</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <span className="text-gray-600 drop-shadow-sm">여유</span>
+          </div>
         </div>
       </div>
     </div>
