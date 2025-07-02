@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import ChatMessage from './ChatMessage';
-import { Send, Image, MapPin, X } from 'lucide-react';
+import { Send, Image, MapPin, X, AlertTriangle, Star } from 'lucide-react';
+import { useUser } from '../contexts/UserContext';
 
 interface LocationChatProps {
   location: string;
@@ -8,6 +10,7 @@ interface LocationChatProps {
 }
 
 const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
+  const { currentUser, canUserChat } = useUser();
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -81,6 +84,11 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
   }, []);
 
   const handleSendMessage = () => {
+    if (!canUserChat()) {
+      alert('채팅 정지 상태입니다. 정지 해제 후 이용해주세요.');
+      return;
+    }
+
     if (newMessage.trim()) {
       const message = {
         id: Date.now(),
@@ -121,7 +129,20 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
             </div>
           </div>
           <div className="flex items-center space-x-3">
+            {/* 사용자 상태 표시 */}
             <div className="text-right">
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1">
+                  <Star className="w-4 h-4 text-yellow-300" />
+                  <span className="text-sm">Lv.{currentUser.friendlinessLevel}</span>
+                </div>
+                {currentUser.isSuspended && (
+                  <div className="flex items-center space-x-1 bg-red-500/20 px-2 py-1 rounded">
+                    <AlertTriangle className="w-3 h-3 text-red-300" />
+                    <span className="text-xs">정지</span>
+                  </div>
+                )}
+              </div>
               <div className="flex items-center space-x-1">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 <span className="text-sm">실시간</span>
@@ -164,8 +185,17 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
 
       {/* 메시지 입력 영역 */}
       <div className="p-4 bg-white border-t border-gray-100">
+        {currentUser.isSuspended && (
+          <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex items-center space-x-2">
+            <AlertTriangle className="w-4 h-4" />
+            <span>채팅이 일시 정지되었습니다. {currentUser.suspendedUntil?.toLocaleString()}까지 정지됩니다.</span>
+          </div>
+        )}
         <div className="flex items-center space-x-3">
-          <button className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors">
+          <button 
+            className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+            disabled={!canUserChat()}
+          >
             <Image className="w-5 h-5" />
           </button>
           <div className="flex-1 relative">
@@ -174,20 +204,21 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="현장 정보를 공유해보세요..."
-              className="w-full px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder={canUserChat() ? "현장 정보를 공유해보세요..." : "채팅이 정지되었습니다"}
+              disabled={!canUserChat()}
+              className="w-full px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <button
             onClick={handleSendMessage}
-            disabled={!newMessage.trim()}
+            disabled={!newMessage.trim() || !canUserChat()}
             className="p-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <Send className="w-5 h-5" />
           </button>
         </div>
         <p className="text-xs text-gray-500 mt-2 text-center">
-          현재 위치: {location} • 익명 채팅
+          현재 위치: {location} • 익명 채팅 • Lv.{currentUser.friendlinessLevel}
         </p>
       </div>
     </div>

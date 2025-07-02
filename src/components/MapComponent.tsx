@@ -18,6 +18,42 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey, onMapClick }
   const mapRef = useRef<HTMLDivElement>(null);
   const [spotPixelPositions, setSpotPixelPositions] = useState<{ x: number; y: number; spot: SpotData }[]>([]);
 
+  // 좌표를 실제 장소명으로 변환하는 함수
+  const getPlaceNameFromCoords = async (lat: number, lng: number): Promise<string> => {
+    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
+      return `위치 - ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+
+    return new Promise((resolve) => {
+      const geocoder = new window.kakao.maps.services.Geocoder();
+      
+      geocoder.coord2Address(lng, lat, (result: any, status: any) => {
+        if (status === window.kakao.maps.services.Status.OK && result.length > 0) {
+          const address = result[0];
+          
+          // 건물명이 있으면 건물명 사용, 없으면 도로명 주소 사용
+          if (address.road_address?.building_name) {
+            resolve(address.road_address.building_name);
+          } else if (address.road_address?.address_name) {
+            // 도로명 주소에서 상세 주소 부분만 추출
+            const addressParts = address.road_address.address_name.split(' ');
+            const shortAddress = addressParts.slice(-2).join(' ');
+            resolve(shortAddress);
+          } else if (address.address?.address_name) {
+            // 지번 주소에서 상세 주소 부분만 추출
+            const addressParts = address.address.address_name.split(' ');
+            const shortAddress = addressParts.slice(-2).join(' ');
+            resolve(shortAddress);
+          } else {
+            resolve(`새 장소 - ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+          }
+        } else {
+          resolve(`새 장소 - ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+        }
+      });
+    });
+  };
+
   useEffect(() => {
     if (!apiKey) {
       return;
@@ -25,7 +61,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey, onMapClick }
 
     // 카카오맵 API 로드 및 지도 초기화
     const script = document.createElement('script');
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false`;
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&autoload=false&libraries=services`;
     script.async = true;
     document.head.appendChild(script);
 
@@ -87,12 +123,25 @@ const MapComponent: React.FC<MapComponentProps> = ({ spots, apiKey, onMapClick }
             // 지도 이동/확대/축소 시마다 업데이트
             window.kakao.maps.event.addListener(map, 'bounds_changed', updateSpotPixelPositions);
 
-            // 지도 클릭 이벤트 등록
+            // 지도 클릭 이벤트 등록 (실제 장소명으로 채팅방 생성)
             if (typeof window !== 'undefined' && window.kakao && window.kakao.maps) {
-              (window.kakao.maps.event.addListener as any)(map, 'click', function(mouseEvent: any) {
+              (window.kakao.maps.event.addListener as any)(map, 'click', async function(mouseEvent: any) {
                 if (typeof onMapClick === 'function') {
                   const latlng = mouseEvent.latLng;
-                  onMapClick(latlng.getLat(), latlng.getLng());
+                  const lat = latlng.getLat();
+                  const lng = latlng.getLng();
+                  
+                  // 좌표를 실제 장소명으로 변환
+                  const placeName = await getPlaceNameFromCoords(lat, lng);
+                  
+                  // 장소명으로 채팅방 생성
+                  onMapClick(lat, lng);
+                  
+                  // 실제 구현에서는 onMapClick에 placeName을 전달하도록 수정 필요
+                  // 임시로 직접 채팅방으로 이동
+                  if (spots[0]?.onSpotClick) {
+                    spots[0].onSpotClick(placeName);
+                  }
                 }
               });
             }
