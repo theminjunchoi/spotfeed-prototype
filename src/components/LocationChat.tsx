@@ -9,43 +9,116 @@ interface LocationChatProps {
   onClose?: () => void;
 }
 
-const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
-  const { currentUser, canUserChat } = useUser();
-  const [messages, setMessages] = useState([
+// 각 장소별 초기 메시지 데이터
+const getLocationMessages = (location: string) => {
+  const locationMessages: { [key: string]: any[] } = {
+    '스타벅스 강남역점': [
+      {
+        id: 1,
+        user: '김민수',
+        message: '여기 굿즈 아직 남아있나요?',
+        time: '방금 전',
+        type: 'text' as const,
+        avatar: '🙋‍♂️'
+      },
+      {
+        id: 2,
+        user: '박지훈',
+        message: '네, 방금 확인했는데 3종류 정도 남았어요!',
+        time: '1분 전',
+        type: 'text' as const,
+        avatar: '👨‍💻'
+      }
+    ],
+    '교보문고 강남점': [
+      {
+        id: 1,
+        user: '최서연',
+        message: '신간 도서 할인 행사 언제까지인가요?',
+        time: '방금 전',
+        type: 'text' as const,
+        avatar: '👩‍🎓'
+      },
+      {
+        id: 2,
+        user: '신영철',
+        message: '이번 주말까지 20% 할인이에요',
+        time: '2분 전',
+        type: 'text' as const,
+        avatar: '👨‍🍳'
+      }
+    ],
+    '신세계백화점 강남점': [
+      {
+        id: 1,
+        user: '이주영',
+        message: '지하 식품관 시식 코너 운영하나요?',
+        time: '방금 전',
+        type: 'text' as const,
+        avatar: '🧑‍🎨'
+      },
+      {
+        id: 2,
+        user: '김태현',
+        message: '네, 지금 운영 중이에요!',
+        time: '1분 전',
+        type: 'text' as const,
+        avatar: '👨‍🏫'
+      }
+    ],
+    '맥도날드 강남점': [
+      {
+        id: 1,
+        user: '박수진',
+        message: '키오스크 고장났나요? 주문이 안 돼요',
+        time: '방금 전',
+        type: 'text' as const,
+        avatar: '👩‍💼'
+      },
+      {
+        id: 2,
+        user: '조민호',
+        message: '직원분께 말씀드리면 수동으로 해주세요',
+        time: '2분 전',
+        type: 'text' as const,
+        avatar: '👨‍🔧'
+      }
+    ],
+    'CGV 강남점': [
+      {
+        id: 1,
+        user: '한지원',
+        message: '팝콘 콤보 할인 있나요?',
+        time: '방금 전',
+        type: 'text' as const,
+        avatar: '👩‍🦰'
+      },
+      {
+        id: 2,
+        user: '윤성민',
+        message: '평일 오후 2시 전까지 30% 할인이요',
+        time: '3분 전',
+        type: 'text' as const,
+        avatar: '👨‍🦱'
+      }
+    ]
+  };
+
+  return locationMessages[location] || [
     {
       id: 1,
-      user: '김민수',
-      message: '여기 굿즈 아직 남아있나요?',
+      user: '익명사용자',
+      message: '이곳은 어떤가요?',
       time: '방금 전',
       type: 'text' as const,
       avatar: '🙋‍♂️'
-    },
-    {
-      id: 2,
-      user: '박지훈',
-      message: '네, 방금 확인했는데 3종류 정도 남았어요!',
-      time: '1분 전',
-      type: 'text' as const,
-      avatar: '👨‍💻'
-    },
-    {
-      id: 3,
-      user: '최서연',
-      message: '줄이 얼마나 길어요?',
-      time: '2분 전',
-      type: 'text' as const,
-      avatar: '👩‍🎓'
-    },
-    {
-      id: 4,
-      user: '신영철',
-      message: '현재 약 15분 정도 대기 예상됩니다',
-      time: '3분 전',
-      type: 'text' as const,
-      avatar: '👨‍🍳'
     }
-  ]);
-  
+  ];
+};
+
+const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
+  const { currentUser, canUserChat } = useUser();
+  const [messages, setMessages] = useState(() => getLocationMessages(location));
   const [newMessage, setNewMessage] = useState('');
   const [userName] = useState('익명' + Math.floor(Math.random() * 1000));
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -55,18 +128,60 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // 가짜 실시간 메시지 시뮬레이션
   useEffect(() => {
-    const fakeMessages = [
-      '줄이 조금 줄어들었네요!',
-      '재고 거의 떨어져가요 ㅠㅠ',
-      '분위기 정말 좋아요!',
-      '사진 찍기 좋은 포토존 있어요',
-      '직원분들 친절해요 👍',
+    scrollToBottom();
+  }, [messages]);
+
+  // 장소별 가짜 실시간 메시지 시뮬레이션
+  useEffect(() => {
+    const locationFakeMessages: { [key: string]: string[] } = {
+      '스타벅스 강남역점': [
+        '줄이 조금 줄어들었네요!',
+        '재고 거의 떨어져가요 ㅠㅠ',
+        '직원분들 친절해요 👍',
+        '와이파이 빨라요!',
+        '테이블 자리 있어요'
+      ],
+      '교보문고 강남점': [
+        '신간 코너 업데이트 됐어요',
+        '카페 자리 많아요',
+        '조용해서 공부하기 좋네요',
+        '베스트셀러 진열 새로 바뀜',
+        '문구 코너 할인 중'
+      ],
+      '신세계백화점 강남점': [
+        '분위기 정말 좋아요!',
+        '사진 찍기 좋은 포토존 있어요',
+        '엘리베이터 대기시간 긴편',
+        '지하 식품관 추천!',
+        '주차장 여유있어요'
+      ],
+      '맥도날드 강남점': [
+        '드라이브스루 빨라요',
+        '매장 깨끗해요',
+        '키즈존 있어서 좋네요',
+        '아이스크림 기계 정상 작동중',
+        '배달 주문 많아서 좀 바빠요'
+      ],
+      'CGV 강남점': [
+        '예매 취소표 나왔어요!',
+        '팝콘 신메뉴 맛있어요',
+        '상영관 음향 좋네요',
+        '주차 할인 받으세요',
+        '매점 줄 짧아요'
+      ]
+    };
+
+    const fakeMessages = locationFakeMessages[location] || [
+      '현장 상황 괜찮아요',
+      '분위기 좋네요',
+      '추천해요!',
+      '여기 처음인데 좋은 것 같아요',
+      '친절하네요'
     ];
 
     const interval = setInterval(() => {
-      if (Math.random() > 0.7) {
+      if (Math.random() > 0.8) {
         const randomMessage = fakeMessages[Math.floor(Math.random() * fakeMessages.length)];
         const newMsg = {
           id: Date.now(),
@@ -74,14 +189,14 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
           message: randomMessage,
           time: '방금 전',
           type: 'text' as const,
-          avatar: ['🙋‍♂️', '👨‍💻', '👩‍🎓', '👨‍🍳', '🧑‍🎨'][Math.floor(Math.random() * 5)]
+          avatar: ['🙋‍♂️', '👨‍💻', '👩‍🎓', '👨‍🍳', '🧑‍🎨', '👩‍💼', '👨‍🔧', '👩‍🦰', '👨‍🦱'][Math.floor(Math.random() * 9)]
         };
         setMessages(prev => [...prev, newMsg]);
       }
-    }, 8000);
+    }, 12000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [location]);
 
   const handleSendMessage = () => {
     if (!canUserChat()) {
