@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { X, Maximize } from 'lucide-react';
 import MapComponent from './MapComponent';
@@ -26,13 +25,13 @@ const FullscreenMap: React.FC<FullscreenMapProps> = ({ spots, apiKey, onMapClick
     .slice(0, 3);
 
   return (
-    <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col">
+    <div className="fixed inset-0 z-50 bg-black flex flex-col">
       {/* 닫기 버튼 */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-10 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+        className="absolute top-4 right-4 z-10 p-2 bg-white/10 backdrop-blur-md rounded-full shadow-lg hover:bg-white/20 transition-colors"
       >
-        <X className="w-6 h-6 text-gray-900" />
+        <X className="w-6 h-6 text-white" />
       </button>
 
       {/* 전체화면 지도 */}
@@ -52,7 +51,7 @@ const FullscreenMap: React.FC<FullscreenMapProps> = ({ spots, apiKey, onMapClick
 
       {/* 하단 활발한 채팅방 표시 */}
       <div className="w-full absolute left-0 right-0 bottom-4 z-10 px-4">
-        <div className="bg-white rounded-xl shadow-lg p-4 border border-gray-200">
+        <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-lg p-4">
           <h3 className="text-lg font-bold text-gray-900 mb-3 text-center">
             🔥 채팅이 활발한 장소 TOP 3
           </h3>
@@ -61,12 +60,12 @@ const FullscreenMap: React.FC<FullscreenMapProps> = ({ spots, apiKey, onMapClick
               <div
                 key={spot.name}
                 onClick={() => spot.onSpotClick(spot.name)}
-                className="bg-gray-50 hover:bg-gray-100 rounded-lg p-3 cursor-pointer transition-colors border border-gray-200"
+                className="bg-white rounded-lg p-3 cursor-pointer hover:shadow-md transition-all border border-gray-100"
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-2">
                     <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      index === 0 ? 'bg-blue-600' : index === 1 ? 'bg-gray-600' : 'bg-gray-800'
+                      index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : 'bg-orange-500'
                     }`}>
                       {index + 1}
                     </div>
@@ -76,7 +75,7 @@ const FullscreenMap: React.FC<FullscreenMapProps> = ({ spots, apiKey, onMapClick
                   </div>
                   <div className={`w-3 h-3 rounded-full ${
                     spot.burstScore >= 80 ? 'bg-red-500' :
-                    spot.burstScore >= 60 ? 'bg-orange-500' : 'bg-blue-500'
+                    spot.burstScore >= 60 ? 'bg-orange-500' : 'bg-green-500'
                   }`}></div>
                 </div>
                 <div className="flex items-center justify-between text-xs text-gray-600">

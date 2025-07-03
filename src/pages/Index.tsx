@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LocationChat from '../components/LocationChat';
@@ -99,17 +98,17 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 overflow-x-hidden">
       {/* 헤더 */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-purple-100">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   SpotFeed
                 </h1>
                 <p className="text-sm text-gray-600 flex items-center">
@@ -119,7 +118,7 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <div className={`w-3 h-3 rounded-full ${isLocationEnabled ? 'bg-blue-500' : 'bg-gray-400'}`}></div>
+              <div className={`w-3 h-3 rounded-full ${isLocationEnabled ? 'bg-green-400' : 'bg-red-400'}`}></div>
               <span className="text-sm text-gray-600">
                 {isLocationEnabled ? '위치 활성화' : '위치 비활성화'}
               </span>
@@ -142,28 +141,28 @@ const Index = () => {
           {/* 주요 기능 아이콘 */}
           <div className="flex justify-center space-x-8 mb-8">
             <Link to="/realtime-chat" className="text-center hover:scale-105 transition-transform">
-              <div className="w-16 h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center mb-2 mx-auto transition-colors">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-2 mx-auto">
                 <MessageCircle className="w-8 h-8 text-white" />
               </div>
-              <p className="text-sm text-gray-700">실시간 채팅</p>
+              <p className="text-sm text-gray-600">실시간 채팅</p>
             </Link>
             <Link to="/wait-time" className="text-center hover:scale-105 transition-transform">
-              <div className="w-16 h-16 bg-gray-800 hover:bg-gray-900 rounded-full flex items-center justify-center mb-2 mx-auto transition-colors">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mb-2 mx-auto">
                 <Clock className="w-8 h-8 text-white" />
               </div>
-              <p className="text-sm text-gray-700">대기시간 공유</p>
+              <p className="text-sm text-gray-600">대기시간 공유</p>
             </Link>
             <Link to="/photo-share" className="text-center hover:scale-105 transition-transform">
-              <div className="w-16 h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center mb-2 mx-auto transition-colors">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mb-2 mx-auto">
                 <Camera className="w-8 h-8 text-white" />
               </div>
-              <p className="text-sm text-gray-700">현장 사진</p>
+              <p className="text-sm text-gray-600">현장 사진</p>
             </Link>
             <Link to="/crowd-check" className="text-center hover:scale-105 transition-transform">
-              <div className="w-16 h-16 bg-gray-800 hover:bg-gray-900 rounded-full flex items-center justify-center mb-2 mx-auto transition-colors">
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-pink-600 rounded-full flex items-center justify-center mb-2 mx-auto">
                 <Users className="w-8 h-8 text-white" />
               </div>
-              <p className="text-sm text-gray-700">혼잡도 체크</p>
+              <p className="text-sm text-gray-600">혼잡도 체크</p>
             </Link>
           </div>
         </div>
@@ -176,12 +175,12 @@ const Index = () => {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                    <MapPin className="w-5 h-5 mr-2 text-blue-600" />
+                    <MapPin className="w-5 h-5 mr-2 text-purple-600" />
                     핫플레이스 지도
                   </h3>
                   <button
                     onClick={() => setShowFullscreenMap(true)}
-                    className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
                     title="전체화면으로 보기"
                   >
                     <Maximize className="w-5 h-5" />
@@ -211,7 +210,7 @@ const Index = () => {
           {/* 현재 위치 기반 SpotFeed */}
           <div>
             <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <Users className="w-5 h-5 mr-2 text-blue-600" />
+              <Users className="w-5 h-5 mr-2 text-purple-600" />
               실시간 현장 정보
             </h3>
             <div className="space-y-4 max-h-[474px] overflow-y-auto pr-2">
@@ -256,7 +255,7 @@ const Index = () => {
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
               <MapPin className="w-5 h-5 text-white" />
             </div>
             <h3 className="text-xl font-bold">SpotFeed</h3>

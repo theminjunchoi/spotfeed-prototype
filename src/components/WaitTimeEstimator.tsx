@@ -43,11 +43,11 @@ const WaitTimeEstimator: React.FC<WaitTimeEstimatorProps> = ({ imageUrl }) => {
   };
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mt-2">
+    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">
           <Calculator className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-medium text-gray-800">대기시간 분석</span>
+          <span className="text-sm font-medium text-blue-800">대기시간 분석</span>
         </div>
         {!waitTime && (
           <button
@@ -61,7 +61,7 @@ const WaitTimeEstimator: React.FC<WaitTimeEstimatorProps> = ({ imageUrl }) => {
       </div>
 
       {isAnalyzing && (
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
+        <div className="flex items-center space-x-2 text-sm text-blue-600">
           <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
           <span>사진에서 대기줄을 분석하고 있습니다...</span>
         </div>
@@ -71,15 +71,15 @@ const WaitTimeEstimator: React.FC<WaitTimeEstimatorProps> = ({ imageUrl }) => {
         <div className="space-y-2">
           <div className="flex items-center space-x-4 text-sm">
             <div className="flex items-center space-x-1">
-              <Users className="w-4 h-4 text-gray-600" />
-              <span className="text-gray-800">약 {peopleCount}명 대기</span>
+              <Users className="w-4 h-4 text-blue-600" />
+              <span className="text-blue-800">약 {peopleCount}명 대기</span>
             </div>
             <div className="flex items-center space-x-1">
               <Clock className="w-4 h-4 text-blue-600" />
-              <span className="text-gray-800 font-medium">예상 {waitTime}분</span>
+              <span className="text-blue-800 font-medium">예상 {waitTime}분</span>
             </div>
           </div>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-blue-600">
             * AI 분석 결과이며 실제 대기시간과 다를 수 있습니다
           </p>
         </div>
