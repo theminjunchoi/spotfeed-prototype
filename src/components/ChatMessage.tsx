@@ -47,9 +47,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   const isOwnMessage = user.includes('익명') && user.includes(currentUser.userId.split('_')[1]);
 
   return (
-    <div className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg relative group">
+    <div className="flex items-start space-x-3 p-3 hover:bg-white rounded-lg relative group transition-colors">
       {/* 아바타 */}
-      <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
         {avatar}
       </div>
       
@@ -59,10 +59,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           <span className="font-medium text-gray-900 text-sm">{user}</span>
           <span className="text-xs text-gray-500">{time}</span>
           {isReported && (
-            <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">신고됨</span>
+            <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">신고됨</span>
           )}
           {isRecommended && (
-            <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">추천됨</span>
+            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">추천됨</span>
           )}
         </div>
         
@@ -73,7 +73,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
             <img 
               src={imageUrl} 
               alt="shared content" 
-              className="max-w-xs rounded-lg shadow-sm"
+              className="max-w-xs rounded-lg shadow-sm border border-gray-200"
             />
             {message && message !== '사진을 공유했습니다' && (
               <p className="text-gray-700 text-sm mt-2">{message}</p>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import ChatMessage from './ChatMessage';
 import WaitTimeEstimator from './WaitTimeEstimator';
@@ -240,17 +241,17 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
       {/* 채팅 헤더 */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4">
+      <div className="bg-gray-900 text-white p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
               <MapPin className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-bold text-lg">실시간 채팅</h3>
-              <p className="text-sm text-purple-100">{location}</p>
+              <p className="text-sm text-gray-300">{location}</p>
             </div>
           </div>
           <div className="flex items-center space-x-3">
@@ -258,28 +259,28 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
             <div className="text-right">
               <div className="flex items-center space-x-2">
                 <div className="flex items-center space-x-1">
-                  <Star className="w-4 h-4 text-yellow-300" />
+                  <Star className="w-4 h-4 text-blue-400" />
                   <span className="text-sm">Lv.{currentUser.friendlinessLevel}</span>
                 </div>
                 {currentUser.isSuspended && (
-                  <div className="flex items-center space-x-1 bg-red-500/20 px-2 py-1 rounded">
-                    <AlertTriangle className="w-3 h-3 text-red-300" />
+                  <div className="flex items-center space-x-1 bg-red-600 px-2 py-1 rounded">
+                    <AlertTriangle className="w-3 h-3 text-white" />
                     <span className="text-xs">정지</span>
                   </div>
                 )}
               </div>
               <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
                 <span className="text-sm">실시간</span>
               </div>
-              <p className="text-xs text-purple-100">
+              <p className="text-xs text-gray-300">
                 {messages.length}개 메시지
               </p>
             </div>
             {onClose && (
               <button
                 onClick={onClose}
-                className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                className="p-1 hover:bg-gray-700 rounded-full transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -314,7 +315,7 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
       </div>
 
       {/* 메시지 입력 영역 */}
-      <div className="p-4 bg-white border-t border-gray-100">
+      <div className="p-4 bg-white border-t border-gray-200">
         {currentUser.isSuspended && (
           <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 flex items-center space-x-2">
             <AlertTriangle className="w-4 h-4" />
@@ -347,7 +348,7 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
           />
           <button 
             onClick={() => fileInputRef.current?.click()}
-            className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+            className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
             disabled={!canUserChat()}
           >
             <Image className="w-5 h-5" />
@@ -360,13 +361,13 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
               onKeyPress={handleKeyPress}
               placeholder={canUserChat() ? "현장 정보를 공유해보세요..." : "채팅이 정지되었습니다"}
               disabled={!canUserChat()}
-              className="w-full px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
           <button
             onClick={handleSendMessage}
             disabled={(!newMessage.trim() && !selectedImage) || !canUserChat()}
-            className="p-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <Send className="w-5 h-5" />
           </button>
