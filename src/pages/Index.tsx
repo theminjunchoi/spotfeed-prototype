@@ -1,227 +1,273 @@
-
-import React, { useState } from 'react';
-import { MessageCircle, Clock, Camera, Users, MapPin, Maximize, Settings, Key } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import LocationChat from '../components/LocationChat';
+import SpotInfoCard from '../components/SpotInfoCard';
 import MapComponent from '../components/MapComponent';
 import FullscreenMap from '../components/FullscreenMap';
-import PersonaSection from '../components/PersonaSection';
+import { MapPin, MessageCircle, Users, Clock, Camera, Key, Maximize } from 'lucide-react';
+import { Input } from '../components/ui/input';
 
 const Index = () => {
-  const navigate = useNavigate();
-  const [apiKey, setApiKey] = useState('');
+  const [currentLocation, setCurrentLocation] = useState<string>('');
+  const [isLocationEnabled, setIsLocationEnabled] = useState(false);
   const [showFullscreenMap, setShowFullscreenMap] = useState(false);
+  const navigate = useNavigate();
+  const kakaoApiKey = 'e5a12bbcf8d41db46bd201eaa8a7348b';
 
-  // 샘플 데이터
-  const spots = [
+  useEffect(() => {
+    // 위치 정보 요청
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation('강남역 2번 출구 인근');
+          setIsLocationEnabled(true);
+          console.log('위치 감지됨:', position.coords);
+        },
+        (error) => {
+          console.log('위치 감지 실패:', error);
+          setCurrentLocation('위치 정보 없음');
+        }
+      );
+    }
+  }, []);
+
+  const spotData = [
     {
-      name: '강남역 스타벅스',
+      name: '스타벅스 강남역점',
+      category: '카페',
+      waitTime: '15분',
+      crowdLevel: 'high' as const,
+      lastUpdate: '방금 전',
       burstScore: 85,
-      lat: 37.498095,
-      lng: 127.027610,
-      messages: 124,
-      onSpotClick: (spotName: string) => navigate(`/chat/${encodeURIComponent(spotName)}`)
+      messages: 23,
+      lat: 37.497942,
+      lng: 127.027621
     },
     {
-      name: '홍대입구 맥도날드',
+      name: '교보문고 강남점',
+      category: '도서/문구',
+      waitTime: '없음',
+      crowdLevel: 'medium' as const,
+      lastUpdate: '3분 전',
+      burstScore: 45,
+      messages: 8,
+      lat: 37.501274,
+      lng: 127.026768
+    },
+    {
+      name: '신세계백화점 강남점',
+      category: '쇼핑',
+      waitTime: '5분',
+      crowdLevel: 'low' as const,
+      lastUpdate: '1분 전',
       burstScore: 72,
-      lat: 37.556514,
-      lng: 126.922595,
-      messages: 89,
-      onSpotClick: (spotName: string) => navigate(`/chat/${encodeURIComponent(spotName)}`)
+      messages: 15,
+      lat: 37.507794,
+      lng: 127.023542
     },
     {
-      name: '명동 롯데백화점',
+      name: '맥도날드 강남점',
+      category: '패스트푸드',
+      waitTime: '8분',
+      crowdLevel: 'high' as const,
+      lastUpdate: '2분 전',
+      burstScore: 88,
+      messages: 31,
+      lat: 37.498095,
+      lng: 127.028000
+    },
+    {
+      name: 'CGV 강남점',
+      category: '영화관',
+      waitTime: '12분',
+      crowdLevel: 'medium' as const,
+      lastUpdate: '5분 전',
       burstScore: 65,
-      lat: 37.563692,
-      lng: 126.982812,
-      messages: 67,
-      onSpotClick: (spotName: string) => navigate(`/chat/${encodeURIComponent(spotName)}`)
-    },
-    {
-      name: '이태원 클럽',
-      burstScore: 91,
-      lat: 37.534565,
-      lng: 126.994734,
-      messages: 156,
-      onSpotClick: (spotName: string) => navigate(`/chat/${encodeURIComponent(spotName)}`)
-    },
-    {
-      name: '잠실 롯데월드타워',
-      burstScore: 58,
-      lat: 37.513056,
-      lng: 127.100278,
-      messages: 43,
-      onSpotClick: (spotName: string) => navigate(`/chat/${encodeURIComponent(spotName)}`)
+      messages: 19,
+      lat: 37.501587,
+      lng: 127.025490
     }
   ];
 
-  const handleMapClick = (lat: number, lng: number) => {
-    console.log(`Map clicked at: ${lat}, ${lng}`);
+  const handleSpotClick = (spotName: string) => {
+    navigate(`/chat/${encodeURIComponent(spotName)}`);
   };
 
-  const features = [
-    {
-      icon: <MessageCircle className="w-6 h-6" />,
-      title: '실시간 채팅',
-      description: '장소별 실시간 소통',
-      path: '/realtime-chat',
-      color: 'from-blue-500 to-blue-600',
-      hoverColor: 'hover:from-blue-600 hover:to-blue-700'
-    },
-    {
-      icon: <Clock className="w-6 h-6" />,
-      title: '대기시간 확인',
-      description: 'AI 기반 대기시간 예측',
-      path: '/wait-time',
-      color: 'from-green-500 to-green-600',
-      hoverColor: 'hover:from-green-600 hover:to-green-700'
-    },
-    {
-      icon: <Camera className="w-6 h-6" />,
-      title: '사진 공유',
-      description: '현장 상황 실시간 공유',
-      path: '/photo-share',
-      color: 'from-purple-500 to-purple-600',
-      hoverColor: 'hover:from-purple-600 hover:to-purple-700'
-    },
-    {
-      icon: <Users className="w-6 h-6" />,
-      title: '혼잡도 체크',
-      description: '실시간 혼잡도 확인',
-      path: '/crowd-check',
-      color: 'from-orange-500 to-orange-600',
-      hoverColor: 'hover:from-orange-600 hover:to-orange-700'
-    }
-  ];
+  const handleJoinChat = (spotName: string) => {
+    navigate(`/chat/${encodeURIComponent(spotName)}`);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 overflow-x-hidden">
+      {/* 헤더 */}
+      <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-purple-100">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">SpotFeed</h1>
-                <p className="text-xs text-gray-500">실시간 장소 정보 플랫폼</p>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  SpotFeed
+                </h1>
+                <p className="text-sm text-gray-600 flex items-center">
+                  <MapPin className="w-4 h-4 mr-1" />
+                  {currentLocation}
+                </p>
               </div>
             </div>
-            
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2">
-                <Key className="w-4 h-4 text-gray-500 mr-2" />
-                <input
-                  type="text"
-                  placeholder="카카오맵 API 키"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="bg-transparent text-sm border-none outline-none placeholder-gray-400 w-40"
-                />
-              </div>
+            <div className="flex items-center space-x-2">
+              <div className={`w-3 h-3 rounded-full ${isLocationEnabled ? 'bg-green-400' : 'bg-red-400'}`}></div>
+              <span className="text-sm text-gray-600">
+                {isLocationEnabled ? '위치 활성화' : '위치 비활성화'}
+              </span>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            실시간으로 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">연결되는</span> 장소들
+      {/* 메인 컨텐츠 */}
+      <main className="max-w-6xl mx-auto px-4 py-6">
+        {/* 플랫폼 소개 */}
+        <div className="text-center mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            지금 여기, 실시간 현장 정보
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            AI와 실시간 데이터로 더 스마트한 장소 선택을 경험하세요
+          <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+            같은 장소에 있는 사람들과 줄 길이, 재고 상황, 현장 분위기를 실시간으로 공유하세요
           </p>
-        </div>
-
-        {/* Map Section */}
-        <div className="mb-12">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden">
-            <div className="p-6 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900">실시간 장소 지도</h3>
-                  <p className="text-sm text-gray-500 mt-1">장소를 클릭하여 채팅방에 참여하거나 지도를 클릭해 새로운 채팅방을 만들어보세요</p>
-                </div>
-                <button
-                  onClick={() => setShowFullscreenMap(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
-                >
-                  <Maximize className="w-4 h-4" />
-                  <span className="text-sm font-medium">전체화면</span>
-                </button>
-              </div>
-            </div>
-            <div className="h-96">
-              <MapComponent
-                spots={spots}
-                apiKey={apiKey}
-                onMapClick={handleMapClick}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Features Grid */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">주요 기능</h3>
-            <p className="text-gray-600">다양한 방법으로 실시간 장소 정보를 확인하세요</p>
-          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                onClick={() => navigate(feature.path)}
-                className="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200/50 p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-200`}>
-                  {feature.icon}
-                </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h4>
-                <p className="text-sm text-gray-600">{feature.description}</p>
+          {/* 주요 기능 아이콘 */}
+          <div className="flex justify-center space-x-8 mb-8">
+            <Link to="/realtime-chat" className="text-center hover:scale-105 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center mb-2 mx-auto">
+                <MessageCircle className="w-8 h-8 text-white" />
               </div>
-            ))}
+              <p className="text-sm text-gray-600">실시간 채팅</p>
+            </Link>
+            <Link to="/wait-time" className="text-center hover:scale-105 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mb-2 mx-auto">
+                <Clock className="w-8 h-8 text-white" />
+              </div>
+              <p className="text-sm text-gray-600">대기시간 공유</p>
+            </Link>
+            <Link to="/photo-share" className="text-center hover:scale-105 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mb-2 mx-auto">
+                <Camera className="w-8 h-8 text-white" />
+              </div>
+              <p className="text-sm text-gray-600">현장 사진</p>
+            </Link>
+            <Link to="/crowd-check" className="text-center hover:scale-105 transition-transform">
+              <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-pink-600 rounded-full flex items-center justify-center mb-2 mx-auto">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <p className="text-sm text-gray-600">혼잡도 체크</p>
+            </Link>
           </div>
         </div>
 
-        {/* Stats Section */}
-        <div className="mb-12">
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-100">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">1,234</div>
-                <div className="text-sm text-gray-600">활성 채팅방</div>
+        {/* 지도와 스팟 정보 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* 지도 섹션 */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 h-full">
+            <div className="flex flex-col h-full justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                    <MapPin className="w-5 h-5 mr-2 text-purple-600" />
+                    핫플레이스 지도
+                  </h3>
+                  <button
+                    onClick={() => setShowFullscreenMap(true)}
+                    className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                    title="전체화면으로 보기"
+                  >
+                    <Maximize className="w-5 h-5" />
+                  </button>
+                </div>
+                <MapComponent 
+                  spots={spotData.map(spot => ({
+                    name: spot.name,
+                    burstScore: spot.burstScore,
+                    lat: spot.lat,
+                    lng: spot.lng,
+                    onSpotClick: handleSpotClick
+                  }))}
+                  apiKey={kakaoApiKey}
+                  onMapClick={(lat, lng) => {
+                    const spotName = `새 장소 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
+                    handleSpotClick(spotName);
+                  }}
+                />
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-purple-600 mb-2">5,678</div>
-                <div className="text-sm text-gray-600">실시간 사용자</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-600 mb-2">890</div>
-                <div className="text-sm text-gray-600">오늘 공유된 사진</div>
-              </div>
+              <p className="text-center text-sm text-gray-500 mt-2 flex-shrink-0">
+                지도의 핫스팟을 클릭하여 채팅방에 참여하세요!
+              </p>
+            </div>
+          </div>
+
+          {/* 현재 위치 기반 SpotFeed */}
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <Users className="w-5 h-5 mr-2 text-purple-600" />
+              실시간 현장 정보
+            </h3>
+            <div className="space-y-4 max-h-[474px] overflow-y-auto pr-2">
+              {spotData.map((spot, index) => (
+                <SpotInfoCard 
+                  key={index} 
+                  {...spot} 
+                  onJoinChat={() => handleJoinChat(spot.name)}
+                />
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Persona Section */}
-        <PersonaSection />
-      </div>
+        {/* 실시간 위치 기반 채팅 */}
+        <div className="mb-8">
+          <LocationChat location={currentLocation} />
+        </div>
+      </main>
 
-      {/* Fullscreen Map */}
+      {/* 전체화면 지도 모달 */}
       {showFullscreenMap && (
         <FullscreenMap
-          spots={spots}
-          apiKey={apiKey}
-          onMapClick={handleMapClick}
+          spots={spotData.map(spot => ({
+            name: spot.name,
+            burstScore: spot.burstScore,
+            lat: spot.lat,
+            lng: spot.lng,
+            messages: spot.messages,
+            onSpotClick: handleSpotClick
+          }))}
+          apiKey={kakaoApiKey}
+          onMapClick={(lat, lng) => {
+            const spotName = `새 장소 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
+            handleSpotClick(spotName);
+          }}
           onClose={() => setShowFullscreenMap(false)}
         />
       )}
+
+      {/* 푸터 */}
+      <footer className="bg-gray-900 text-white py-8 mt-12">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
+              <MapPin className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-xl font-bold">SpotFeed</h3>
+          </div>
+          <p className="text-gray-400 mb-4">
+            지금 여기, 실시간 현장 정보 공유 플랫폼
+          </p>
+          <p className="text-sm text-gray-500">
+            © 2025 SpotFeed. 위치 기반 익명 채팅 & 현장 정보 공유 서비스
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
