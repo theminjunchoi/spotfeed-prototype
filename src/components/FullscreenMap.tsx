@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { X, Maximize } from 'lucide-react';
+import { X, Maximize, TrendingUp } from 'lucide-react';
 import MapComponent from './MapComponent';
 
 interface SpotData {
@@ -19,23 +20,22 @@ interface FullscreenMapProps {
 }
 
 const FullscreenMap: React.FC<FullscreenMapProps> = ({ spots, apiKey, onMapClick, onClose }) => {
-  // 메시지 수 기준으로 상위 3개 활발한 장소 추출
   const topActiveSpots = [...spots]
     .sort((a, b) => b.messages - a.messages)
     .slice(0, 3);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col">
-      {/* 닫기 버튼 */}
+    <div className="fixed inset-0 z-50 bg-black">
+      {/* Close Button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-10 p-2 bg-white/10 backdrop-blur-md rounded-full shadow-lg hover:bg-white/20 transition-colors"
+        className="absolute top-6 right-6 z-20 p-3 bg-white/10 backdrop-blur-md rounded-xl shadow-lg hover:bg-white/20 transition-all duration-200 group"
       >
-        <X className="w-6 h-6 text-white" />
+        <X className="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-200" />
       </button>
 
-      {/* 전체화면 지도 */}
-      <div className="w-full flex-1 min-h-0">
+      {/* Fullscreen Map */}
+      <div className="w-full h-full">
         <MapComponent
           spots={spots.map(spot => ({
             name: spot.name,
@@ -49,41 +49,73 @@ const FullscreenMap: React.FC<FullscreenMapProps> = ({ spots, apiKey, onMapClick
         />
       </div>
 
-      {/* 하단 활발한 채팅방 표시 */}
-      <div className="w-full absolute left-0 right-0 bottom-4 z-10 px-4">
-        <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-lg p-4">
-          <h3 className="text-lg font-bold text-gray-900 mb-3 text-center">
-            🔥 채팅이 활발한 장소 TOP 3
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {topActiveSpots.map((spot, index) => (
-              <div
-                key={spot.name}
-                onClick={() => spot.onSpotClick(spot.name)}
-                className="bg-white rounded-lg p-3 cursor-pointer hover:shadow-md transition-all border border-gray-100"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : 'bg-orange-500'
-                    }`}>
-                      {index + 1}
-                    </div>
-                    <span className="font-medium text-gray-900 text-sm">
-                      {spot.name.length > 15 ? `${spot.name.substring(0, 15)}...` : spot.name}
-                    </span>
-                  </div>
-                  <div className={`w-3 h-3 rounded-full ${
-                    spot.burstScore >= 80 ? 'bg-red-500' :
-                    spot.burstScore >= 60 ? 'bg-orange-500' : 'bg-green-500'
-                  }`}></div>
-                </div>
-                <div className="flex items-center justify-between text-xs text-gray-600">
-                  <span>💬 {spot.messages}개 메시지</span>
-                  <span>🔥 {spot.burstScore}점</span>
-                </div>
+      {/* Bottom Active Spots Panel */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 p-6">
+        <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20">
+          <div className="p-6">
+            <div className="flex items-center justify-center space-x-2 mb-6">
+              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-white" />
               </div>
-            ))}
+              <h3 className="text-xl font-bold text-gray-900">
+                🔥 실시간 HOT 채팅방 TOP 3
+              </h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {topActiveSpots.map((spot, index) => (
+                <div
+                  key={spot.name}
+                  onClick={() => spot.onSpotClick(spot.name)}
+                  className="group bg-white rounded-xl p-4 cursor-pointer hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-gray-200 hover:-translate-y-1"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm ${
+                        index === 0 ? 'bg-gradient-to-r from-yellow-400 to-orange-500' : 
+                        index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500' : 
+                        'bg-gradient-to-r from-orange-400 to-red-500'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm group-hover:text-blue-600 transition-colors">
+                          {spot.name.length > 18 ? `${spot.name.substring(0, 18)}...` : spot.name}
+                        </h4>
+                      </div>
+                    </div>
+                    <div className={`w-4 h-4 rounded-full animate-pulse ${
+                      spot.burstScore >= 80 ? 'bg-red-500' :
+                      spot.burstScore >= 60 ? 'bg-orange-500' : 'bg-green-500'
+                    }`}></div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="flex items-center space-x-1 text-gray-600">
+                        <span>💬</span>
+                        <span>{spot.messages}개 메시지</span>
+                      </span>
+                      <span className="flex items-center space-x-1 text-gray-600">
+                        <span>🔥</span>
+                        <span className="font-medium">{spot.burstScore}점</span>
+                      </span>
+                    </div>
+                    
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
+                      <div 
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          spot.burstScore >= 80 ? 'bg-gradient-to-r from-red-400 to-red-600' :
+                          spot.burstScore >= 60 ? 'bg-gradient-to-r from-orange-400 to-orange-600' : 
+                          'bg-gradient-to-r from-green-400 to-green-600'
+                        }`}
+                        style={{ width: `${spot.burstScore}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
