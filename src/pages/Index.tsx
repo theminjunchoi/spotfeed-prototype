@@ -120,7 +120,7 @@ const Index = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  PopBuzz
+                  Poppi
                 </h1>
                 <p className="text-sm text-gray-600 flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
@@ -319,7 +319,7 @@ const Index = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
               <Zap className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-xl font-bold">PopBuzz</h3>
+            <h3 className="text-xl font-bold">Poppi</h3>
           </div>
           <p className="text-gray-400 mb-4">
             팝업 스토어 현장 데이터 실시간 채팅 플랫폼
@@ -331,7 +331,7 @@ const Index = () => {
             <span>📸 현장 포토존 정보</span>
           </div>
           <p className="text-sm text-gray-500">
-            © 2025 PopBuzz. 한정판 FOMO족, 줄 증오러, 인스타 인증러를 위한 팝업 정보 공유 서비스
+            © 2025 Poppi. 한정판 FOMO족, 줄 증오러, 인스타 인증러를 위한 팝업 정보 공유 서비스
           </p>
         </div>
       </footer>
