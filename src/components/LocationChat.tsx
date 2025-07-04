@@ -1,13 +1,68 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ChatMessage from './ChatMessage';
 import WaitTimeEstimator from './WaitTimeEstimator';
-import { Send, Image, MapPin, X, AlertTriangle, Star } from 'lucide-react';
+import { Send, Image, MapPin, X, AlertTriangle, Star, Clock, ShoppingBag, Camera, TrendingUp } from 'lucide-react';
 import { useUser } from '../contexts/UserContext';
 
 interface LocationChatProps {
   location: string;
   onClose?: () => void;
 }
+
+// 각 장소별 팝업 정보 데이터
+const getPopupInfo = (location: string) => {
+  const popupInfoData: { [key: string]: any } = {
+    '카카오프렌즈 X 라이언 한정 팝업': {
+      waitTime: '45분',
+      crowdLevel: 'high',
+      stockStatus: '한정 굿즈 30% 남음',
+      photoZoneWait: '20분',
+      burstScore: 95,
+      category: '캐릭터 굿즈'
+    },
+    '나이키 에어포스1 컬래버 스토어': {
+      waitTime: '90분',
+      crowdLevel: 'high',
+      stockStatus: '사이즈 별 재고 상이',
+      photoZoneWait: '15분',
+      burstScore: 88,
+      category: '스니커즈/패션'
+    },
+    '젠틀몬스터 신작 체험존': {
+      waitTime: '25분',
+      crowdLevel: 'medium',
+      stockStatus: '신작 충분',
+      photoZoneWait: '없음',
+      burstScore: 72,
+      category: '선글라스/액세서리'
+    },
+    'BTS 굿즈 한정 팝업스토어': {
+      waitTime: '120분',
+      crowdLevel: 'high',
+      stockStatus: '⚠️ 일부 품목 품절 임박',
+      photoZoneWait: '40분',
+      burstScore: 98,
+      category: 'K-POP 굿즈'
+    },
+    '스타벅스 체리블라썸 MD 팝업': {
+      waitTime: '15분',
+      crowdLevel: 'medium',
+      stockStatus: '시즌 MD 풍부',
+      photoZoneWait: '5분',
+      burstScore: 65,
+      category: '카페/굿즈'
+    }
+  };
+
+  return popupInfoData[location] || {
+    waitTime: '정보 없음',
+    crowdLevel: 'medium',
+    stockStatus: '재고 정보 없음',
+    photoZoneWait: '정보 없음',
+    burstScore: 50,
+    category: '일반'
+  };
+};
 
 // 각 장소별 초기 메시지 데이터
 const getLocationMessages = (location: string) => {
@@ -126,6 +181,8 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const popupInfo = getPopupInfo(location);
 
   // 장소별 가짜 실시간 메시지 시뮬레이션
   useEffect(() => {
@@ -239,6 +296,24 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
     }
   };
 
+  const getCrowdColor = (level: string) => {
+    switch (level) {
+      case 'low': return 'text-green-700 bg-green-50';
+      case 'medium': return 'text-orange-700 bg-orange-50';
+      case 'high': return 'text-red-700 bg-red-50';
+      default: return 'text-gray-700 bg-gray-50';
+    }
+  };
+
+  const getCrowdText = (level: string) => {
+    switch (level) {
+      case 'low': return '여유';
+      case 'medium': return '보통';
+      case 'high': return '혼잡';
+      default: return '정보없음';
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
       {/* 채팅 헤더 */}
@@ -284,6 +359,71 @@ const LocationChat: React.FC<LocationChatProps> = ({ location, onClose }) => {
                 <X className="w-5 h-5" />
               </button>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* 팝업 정보 패널 */}
+      <div className="bg-gray-50 border-b border-gray-100 p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="font-medium text-gray-900 flex items-center">
+            <TrendingUp className="w-4 h-4 mr-2 text-purple-600" />
+            현장 정보
+          </h4>
+          <div className="flex items-center space-x-1">
+            <div className={`w-2 h-2 rounded-full ${
+              popupInfo.burstScore >= 90 ? 'bg-red-500' :
+              popupInfo.burstScore >= 70 ? 'bg-orange-500' : 'bg-green-500'
+            }`}></div>
+            <span className="text-sm text-gray-600">HOT {popupInfo.burstScore}</span>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          {/* 대기시간 */}
+          <div className="bg-white rounded-lg p-3 text-center">
+            <div className="flex justify-center mb-2">
+              <Clock className="w-4 h-4 text-blue-600" />
+            </div>
+            <p className="text-xs text-gray-500 mb-1">대기시간</p>
+            <p className="text-sm font-medium text-gray-900">{popupInfo.waitTime}</p>
+          </div>
+
+          {/* 혼잡도 */}
+          <div className="bg-white rounded-lg p-3 text-center">
+            <div className="flex justify-center mb-2">
+              <div className={`w-4 h-4 rounded-full ${getCrowdColor(popupInfo.crowdLevel)}`}></div>
+            </div>
+            <p className="text-xs text-gray-500 mb-1">혼잡도</p>
+            <p className="text-sm font-medium text-gray-900">{getCrowdText(popupInfo.crowdLevel)}</p>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          {/* 재고 상태 */}
+          <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-2">
+            {popupInfo.stockStatus.includes('⚠️') ? (
+              <AlertTriangle className="w-4 h-4 text-red-500" />
+            ) : (
+              <ShoppingBag className="w-4 h-4 text-green-500" />
+            )}
+            <div>
+              <p className="text-xs text-gray-500">재고 현황</p>
+              <p className={`text-sm font-medium ${
+                popupInfo.stockStatus.includes('⚠️') ? 'text-red-600' : 'text-green-600'
+              }`}>
+                {popupInfo.stockStatus}
+              </p>
+            </div>
+          </div>
+
+          {/* 포토존 정보 */}
+          <div className="flex items-center space-x-2 bg-white rounded-lg px-3 py-2">
+            <Camera className="w-4 h-4 text-purple-600" />
+            <div>
+              <p className="text-xs text-gray-500">포토존 대기</p>
+              <p className="text-sm font-medium text-gray-900">{popupInfo.photoZoneWait}</p>
+            </div>
           </div>
         </div>
       </div>
