@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LocationChat from '../components/LocationChat';
 import SpotInfoCard from '../components/SpotInfoCard';
 import MapComponent from '../components/MapComponent';
 import FullscreenMap from '../components/FullscreenMap';
-import { MapPin, MessageCircle, Users, Clock, Camera, Key, Maximize } from 'lucide-react';
+import { MapPin, MessageCircle, Users, Clock, Camera, Key, Maximize, Zap, ShoppingBag, Timer, AlertTriangle } from 'lucide-react';
 import { Input } from '../components/ui/input';
 
 const Index = () => {
@@ -31,61 +32,71 @@ const Index = () => {
     }
   }, []);
 
-  const spotData = [
+  const popupData = [
     {
-      name: '스타벅스 강남역점',
-      category: '카페',
-      waitTime: '15분',
+      name: '카카오프렌즈 X 라이언 한정 팝업',
+      category: '캐릭터 굿즈',
+      waitTime: '45분',
       crowdLevel: 'high' as const,
       lastUpdate: '방금 전',
-      burstScore: 85,
-      messages: 23,
+      burstScore: 95,
+      messages: 127,
       lat: 37.497942,
-      lng: 127.027621
+      lng: 127.027621,
+      stockStatus: '한정 굿즈 30% 남음',
+      photoZoneWait: '20분'
     },
     {
-      name: '교보문고 강남점',
-      category: '도서/문구',
-      waitTime: '없음',
-      crowdLevel: 'medium' as const,
-      lastUpdate: '3분 전',
-      burstScore: 45,
-      messages: 8,
-      lat: 37.501274,
-      lng: 127.026768
-    },
-    {
-      name: '신세계백화점 강남점',
-      category: '쇼핑',
-      waitTime: '5분',
-      crowdLevel: 'low' as const,
-      lastUpdate: '1분 전',
-      burstScore: 72,
-      messages: 15,
-      lat: 37.507794,
-      lng: 127.023542
-    },
-    {
-      name: '맥도날드 강남점',
-      category: '패스트푸드',
-      waitTime: '8분',
+      name: '나이키 에어포스1 컬래버 스토어',
+      category: '스니커즈/패션',
+      waitTime: '90분',
       crowdLevel: 'high' as const,
       lastUpdate: '2분 전',
       burstScore: 88,
-      messages: 31,
-      lat: 37.498095,
-      lng: 127.028000
+      messages: 89,
+      lat: 37.501274,
+      lng: 127.026768,
+      stockStatus: '사이즈 별 재고 상이',
+      photoZoneWait: '15분'
     },
     {
-      name: 'CGV 강남점',
-      category: '영화관',
-      waitTime: '12분',
+      name: '젠틀몬스터 신작 체험존',
+      category: '선글라스/액세서리',
+      waitTime: '25분',
       crowdLevel: 'medium' as const,
       lastUpdate: '5분 전',
+      burstScore: 72,
+      messages: 45,
+      lat: 37.507794,
+      lng: 127.023542,
+      stockStatus: '신작 충분',
+      photoZoneWait: '없음'
+    },
+    {
+      name: 'BTS 굿즈 한정 팝업스토어',
+      category: 'K-POP 굿즈',
+      waitTime: '120분',
+      crowdLevel: 'high' as const,
+      lastUpdate: '1분 전',
+      burstScore: 98,
+      messages: 234,
+      lat: 37.498095,
+      lng: 127.028000,
+      stockStatus: '⚠️ 일부 품목 품절 임박',
+      photoZoneWait: '40분'
+    },
+    {
+      name: '스타벅스 체리블라썸 MD 팝업',
+      category: '카페/굿즈',
+      waitTime: '15분',
+      crowdLevel: 'medium' as const,
+      lastUpdate: '3분 전',
       burstScore: 65,
-      messages: 19,
+      messages: 38,
       lat: 37.501587,
-      lng: 127.025490
+      lng: 127.025490,
+      stockStatus: '시즌 MD 풍부',
+      photoZoneWait: '5분'
     }
   ];
 
@@ -105,11 +116,11 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-                <MapPin className="w-6 h-6 text-white" />
+                <Zap className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  SpotFeed
+                  PopBuzz
                 </h1>
                 <p className="text-sm text-gray-600 flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
@@ -132,10 +143,10 @@ const Index = () => {
         {/* 플랫폼 소개 */}
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            지금 여기, 실시간 현장 정보
+            팝업 스토어 현장 정보 실시간 공유
           </h2>
           <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
-            같은 장소에 있는 사람들과 줄 길이, 재고 상황, 현장 분위기를 실시간으로 공유하세요
+            "지금 여기" 팝업 스토어 앞에서 줄 길이·재고·분위기 같은 정보를 실시간으로 공유하는 놀이터
           </p>
           
           {/* 주요 기능 아이콘 */}
@@ -147,10 +158,10 @@ const Index = () => {
               <p className="text-sm text-gray-600">실시간 채팅</p>
             </Link>
             <Link to="/wait-time" className="text-center hover:scale-105 transition-transform">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mb-2 mx-auto">
-                <Clock className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center mb-2 mx-auto">
+                <Timer className="w-8 h-8 text-white" />
               </div>
-              <p className="text-sm text-gray-600">대기시간 공유</p>
+              <p className="text-sm text-gray-600">대기시간 체크</p>
             </Link>
             <Link to="/photo-share" className="text-center hover:scale-105 transition-transform">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center mb-2 mx-auto">
@@ -159,15 +170,15 @@ const Index = () => {
               <p className="text-sm text-gray-600">현장 사진</p>
             </Link>
             <Link to="/crowd-check" className="text-center hover:scale-105 transition-transform">
-              <div className="w-16 h-16 bg-gradient-to-r from-pink-400 to-pink-600 rounded-full flex items-center justify-center mb-2 mx-auto">
-                <Users className="w-8 h-8 text-white" />
+              <div className="w-16 h-16 bg-gradient-to-r from-red-400 to-red-600 rounded-full flex items-center justify-center mb-2 mx-auto">
+                <ShoppingBag className="w-8 h-8 text-white" />
               </div>
-              <p className="text-sm text-gray-600">혼잡도 체크</p>
+              <p className="text-sm text-gray-600">재고 알림</p>
             </Link>
           </div>
         </div>
 
-        {/* 지도와 스팟 정보 */}
+        {/* 지도와 팝업 정보 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* 지도 섹션 */}
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 h-full">
@@ -176,7 +187,7 @@ const Index = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold text-gray-900 flex items-center">
                     <MapPin className="w-5 h-5 mr-2 text-purple-600" />
-                    핫플레이스 지도
+                    HOT 팝업 지도
                   </h3>
                   <button
                     onClick={() => setShowFullscreenMap(true)}
@@ -187,7 +198,7 @@ const Index = () => {
                   </button>
                 </div>
                 <MapComponent 
-                  spots={spotData.map(spot => ({
+                  spots={popupData.map(spot => ({
                     name: spot.name,
                     burstScore: spot.burstScore,
                     lat: spot.lat,
@@ -196,30 +207,80 @@ const Index = () => {
                   }))}
                   apiKey={kakaoApiKey}
                   onMapClick={(lat, lng) => {
-                    const spotName = `새 장소 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
+                    const spotName = `새 팝업 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
                     handleSpotClick(spotName);
                   }}
                 />
               </div>
               <p className="text-center text-sm text-gray-500 mt-2 flex-shrink-0">
-                지도의 핫스팟을 클릭하여 채팅방에 참여하세요!
+                🔥 HOT한 팝업을 클릭하여 현장 채팅에 참여하세요!
               </p>
             </div>
           </div>
 
-          {/* 현재 위치 기반 SpotFeed */}
+          {/* 현재 위치 기반 팝업 정보 */}
           <div>
             <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-              <Users className="w-5 h-5 mr-2 text-purple-600" />
-              실시간 현장 정보
+              <Zap className="w-5 h-5 mr-2 text-purple-600" />
+              실시간 팝업 현황
             </h3>
             <div className="space-y-4 max-h-[474px] overflow-y-auto pr-2">
-              {spotData.map((spot, index) => (
-                <SpotInfoCard 
-                  key={index} 
-                  {...spot} 
-                  onJoinChat={() => handleJoinChat(spot.name)}
-                />
+              {popupData.map((popup, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-md p-4 border border-gray-100 hover:shadow-lg transition-shadow">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <h4 className="font-bold text-gray-900 text-sm">{popup.name}</h4>
+                        <div className={`w-2 h-2 rounded-full ${
+                          popup.burstScore >= 90 ? 'bg-red-500' :
+                          popup.burstScore >= 70 ? 'bg-orange-500' : 'bg-green-500'
+                        }`}></div>
+                      </div>
+                      <p className="text-xs text-gray-500 mb-2">{popup.category}</p>
+                      
+                      {/* 재고 상태 */}
+                      <div className="flex items-center space-x-1 mb-2">
+                        {popup.stockStatus.includes('⚠️') ? (
+                          <AlertTriangle className="w-3 h-3 text-red-500" />
+                        ) : (
+                          <ShoppingBag className="w-3 h-3 text-green-500" />
+                        )}
+                        <span className={`text-xs ${
+                          popup.stockStatus.includes('⚠️') ? 'text-red-600 font-medium' : 'text-green-600'
+                        }`}>
+                          {popup.stockStatus}
+                        </span>
+                      </div>
+
+                      {/* 대기시간 및 포토존 */}
+                      <div className="flex items-center space-x-4 text-xs text-gray-600">
+                        <div className="flex items-center space-x-1">
+                          <Clock className="w-3 h-3" />
+                          <span>대기 {popup.waitTime}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Camera className="w-3 h-3" />
+                          <span>포토존 {popup.photoZoneWait}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-right">
+                      <div className="text-xs text-gray-500 mb-1">{popup.lastUpdate}</div>
+                      <div className="flex items-center space-x-1 text-xs text-purple-600">
+                        <MessageCircle className="w-3 h-3" />
+                        <span>{popup.messages}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleJoinChat(popup.name)}
+                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm py-2 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
+                  >
+                    현장 채팅 참여하기
+                  </button>
+                </div>
               ))}
             </div>
           </div>
@@ -234,7 +295,7 @@ const Index = () => {
       {/* 전체화면 지도 모달 */}
       {showFullscreenMap && (
         <FullscreenMap
-          spots={spotData.map(spot => ({
+          spots={popupData.map(spot => ({
             name: spot.name,
             burstScore: spot.burstScore,
             lat: spot.lat,
@@ -244,7 +305,7 @@ const Index = () => {
           }))}
           apiKey={kakaoApiKey}
           onMapClick={(lat, lng) => {
-            const spotName = `새 장소 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
+            const spotName = `새 팝업 - ${lat.toFixed(5)},${lng.toFixed(5)}`;
             handleSpotClick(spotName);
           }}
           onClose={() => setShowFullscreenMap(false)}
@@ -256,15 +317,21 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center mb-4">
             <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
-              <MapPin className="w-5 h-5 text-white" />
+              <Zap className="w-5 h-5 text-white" />
             </div>
-            <h3 className="text-xl font-bold">SpotFeed</h3>
+            <h3 className="text-xl font-bold">PopBuzz</h3>
           </div>
           <p className="text-gray-400 mb-4">
-            지금 여기, 실시간 현장 정보 공유 플랫폼
+            팝업 스토어 현장 데이터 실시간 채팅 플랫폼
           </p>
+          <div className="flex justify-center space-x-6 text-sm text-gray-500 mb-4">
+            <span>📍 위치 기반 익명 채팅</span>
+            <span>⏰ 실시간 대기시간 공유</span>
+            <span>📦 재고 현황 알림</span>
+            <span>📸 현장 포토존 정보</span>
+          </div>
           <p className="text-sm text-gray-500">
-            © 2025 SpotFeed. 위치 기반 익명 채팅 & 현장 정보 공유 서비스
+            © 2025 PopBuzz. 한정판 FOMO족, 줄 증오러, 인스타 인증러를 위한 팝업 정보 공유 서비스
           </p>
         </div>
       </footer>
